@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rekapan - Enam Shoes Care</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --success: #166534;
+            --warning: #f59e0b;
+            --info: #64748b;
+            --danger: #ef4444;
+            --bg: #f1f5f9;
+            --card-bg: #ffffff;
+        }
+
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); padding: 0; margin: 0; color: #1e293b; }
+        
+        .nav-bar { 
+            background: white; padding: 10px; display: flex; justify-content: space-around; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;
+        }
+        .nav-btn { 
+            padding: 12px; border: none; background: transparent; font-weight: bold; 
+            color: var(--secondary); text-decoration: none; font-size: 14px; flex: 1; text-align: center;
+        }
+        .nav-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
+
+        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: white; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .stat-label { font-size: 14px; color: #475569; margin-bottom: 8px; display: block; }
+        .stat-value { font-size: 24px; font-weight: 800; color: var(--primary); }
+
+        .filter-card { background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .filter-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .input-group { display: flex; flex-direction: column; gap: 8px; }
+        .input-group label { font-size: 12px; font-weight: bold; color: #64748b; }
+        .input-group input { padding: 12px; border: 1px solid #e2e8f0; border-radius: 10px; outline: none; font-size: 14px; background: #f8fafc; }
+        .reset-link { text-align: right; margin-top: 10px; display: block; font-size: 12px; color: var(--primary); text-decoration: none; cursor: pointer; }
+
+        .table-card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
+        th { text-align: left; padding: 15px 10px; border-bottom: 2px solid #f1f5f9; color: #64748b; }
+        td { padding: 15px 10px; border-bottom: 1px solid #f1f5f9; color: #334155; }
+        .col-nama { font-weight: bold; color: #000; }
+        .btn-hapus { color: var(--danger); border: none; background: none; cursor: pointer; font-size: 16px; }
+
+        .footer-section { margin-top: 30px; display: flex; flex-direction: column; gap: 15px; align-items: center; }
+        .btn-large-excel { width: 100%; background-color: var(--success); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .backup-container { width: 100%; border: 2px dashed var(--warning); border-radius: 15px; padding: 20px; background-color: #fffbeb; box-sizing: border-box; text-align: center; }
+        .backup-title { color: #92400e; font-weight: 800; font-size: 14px; margin-bottom: 15px; text-transform: uppercase; }
+        .backup-buttons { display: flex; gap: 10px; }
+        .btn-backup-json { flex: 1; background-color: var(--warning); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .btn-restore-json { flex: 1; background-color: var(--info); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .btn-delete-all { margin-top: 10px; color: var(--danger); background: none; border: none; font-weight: bold; font-size: 12px; cursor: pointer; text-transform: uppercase; }
+        .empty-state { text-align: center; padding: 40px; color: var(--secondary); }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-btn">➕ Transaksi</a>
+        <a href="rekapan.html" class="nav-btn active">📊 Rekapan</a>
+        <button onclick="logout()" class="nav-btn" style="color: var(--danger);">Logout</button>
+    </nav>
+
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-label">Total Sepatu</span>
+                <span id="totalSepatu" class="stat-value">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Total Omzet</span>
+                <span id="totalOmzet" class="stat-value">Rp 0</span>
+            </div>
+        </div>
+
+        <div class="filter-card">
+            <div class="filter-row">
+                <div class="input-group">
+                    <label>Cari Nama:</label>
+                    <input type="text" id="searchInput" placeholder="Nama..." onkeyup="muatData()">
+                </div>
+                <div class="input-group">
+                    <label>Cari Tanggal:</label>
+                    <input type="date" id="dateInput" onchange="muatData()">
+                </div>
+            </div>
+            <a class="reset-link" onclick="resetFilter()">Reset Filter</a>
+        </div>
+
+        <div class="table-card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tgl</th>
+                            <th>Nama</th>
+                            <th>Layanan</th>
+                            <th>Total</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listRiwayat"></tbody>
+                </table>
+                <div id="noData" class="empty-state" style="display: none;">Data tidak ditemukan.</div>
+            </div>
+        </div>
+
+        <div class="footer-section">
+            <button class="btn-large-excel" onclick="downloadExcel()">📊 Download Excel</button>
+            <div class="backup-container">
+                <div class="backup-title">Keamanan Data (Backup/Restore)</div>
+                <div class="backup-buttons">
+                    <button class="btn-backup-json" onclick="backupData()">Backup JSON</button>
+                    <input type="file" id="importFile" style="display: none;" accept=".json" onchange="prosesImport(event)">
+                    <button class="btn-restore-json" id="btnRestore" onclick="document.getElementById('importFile').click()">Restore JSON</button>
+                </div>
+            </div>
+            <button class="btn-delete-all" id="btnDeleteAll" onclick="hapusSemuaData()">Hapus Semua Data Permanen</button>
+        </div>
+    </div>
+
+<script>
+    // --- SISTEM KEAMANAN ROLE ---
+    const ROLE = sessionStorage.getItem('role');
+
+    function checkAuth() {
+        if (!ROLE) {
+            window.location.href = 'login.html';
+        }
+    }
+
+    function logout() {
+        sessionStorage.clear();
+        window.location.href = 'login.html';
+    }
+
+    function muatData() {
+        checkAuth();
+        const db = JSON.parse(localStorage.getItem('cuciSepatuDB')) || [];
+        const tbody = document.getElementById('listRiwayat');
+        const noData = document.getElementById('noData');
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const searchDate = document.getElementById('dateInput').value; 
+        
+        // Sembunyikan fitur sensitif jika Staff
+        if (ROLE === 'staff') {
+            document.getElementById('btnRestore').style.display = 'none';
+            document.getElementById('btnDeleteAll').style.display = 'none';
+        }
+
+        let omzetTotal = 0;
+        let sepatuTotal = 0;
+        tbody.innerHTML = "";
+
+        const filteredData = db.filter(t => {
+            const matchNama = t.nama.toLowerCase().includes(searchTerm);
+            let matchDate = true;
+            if (searchDate) {
+                const parts = t.tgl.split(',')[0].split('/');
+                const dateFromDB = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+                matchDate = (dateFromDB === searchDate);
+            }
+            return matchNama && matchDate;
+        });
+
+        if (filteredData.length === 0) {
+            noData.style.display = "block";
+            document.getElementById('totalSepatu').innerText = "0";
+            document.getElementById('totalOmzet').innerText = "Rp 0";
+            return;
+        } else {
+            noData.style.display = "none";
+        }
+
+        filteredData.slice().reverse().forEach(t => {
+            omzetTotal += t.total;
+            sepatuTotal += (t.sepatu || 0);
+            
+            let detailTampil = t.layanan || ""; 
+            if (!detailTampil && (t.waList || t.listWA)) {
+                detailTampil = (t.waList || t.listWA);
+            }
+            
+            detailTampil = detailTampil.replace(/- /g, '')
+                                       .replace(/: Rp [\d.]+/g, '') 
+                                       .replace(/\n/g, ', ')
+                                       .trim();
+            if (detailTampil.endsWith(',')) detailTampil = detailTampil.slice(0, -1);
+
+            // Kolom aksi hanya ada tombol hapus jika Admin
+            const kolomAksi = ROLE === 'admin' 
+                ? `<td><button class="btn-hapus" onclick="hapusData(${t.id})">✕</button></td>`
+                : `<td>-</td>`;
+
+            tbody.innerHTML += `
+                <tr>
+                    <td>${t.tgl.split(',')[0]}</td>
+                    <td class="col-nama">${t.nama}</td>
+                    <td>${detailTampil}</td>
+                    <td>${t.total.toLocaleString('id-ID')}</td>
+                    ${kolomAksi}
+                </tr>
+            `;
+        });
+
+        document.getElementById('totalSepatu').innerText = sepatuTotal;
+        document.getElementById('totalOmzet').innerText = "Rp " + omzetTotal.toLocaleString('id-ID');
+    }
+
+    function resetFilter() {
+        document.getElementById('searchInput').value = "";
+        document.getElementById('dateInput').value = "";
+        muatData();
+    }
+
+    function downloadExcel() {
+        const db = JSON.parse(localStorage.getItem('cuciSepatuDB')) || [];
+        if (db.length === 0) return alert("Data kosong!");
+
+        let totalSepatu = 0;
+        let totalBayar = 0;
+        
+        const dataExcel = db.map((t, index) => {
+            totalSepatu += (t.sepatu || 0);
+            totalBayar += (t.total || 0);
+            
+            let detailExcel = t.layanan || t.waList || t.listWA || "";
+            detailExcel = detailExcel.replace(/- /g, '')
+                                     .replace(/: Rp [\d.]+/g, '')
+                                     .replace(/\n/g, ', ')
+                                     .trim();
+            if (detailExcel.endsWith(',')) detailExcel = detailExcel.slice(0, -1);
+
+            return {
+                "No": index + 1,
+                "Tanggal": t.tgl,
+                "Invoice": t.inv || "",
+                "Nama Pelanggan": t.nama,
+                "WhatsApp": t.wa || "",
+                "Layanan": detailExcel,
+                "Jumlah": t.sepatu,
+                "Total": t.total
+            };
+        });
+
+        dataExcel.push({}); 
+        dataExcel.push({
+            "Layanan": "TOTAL KESELURUHAN",
+            "Jumlah": totalSepatu,
+            "Total": totalBayar
+        });
+
+        const worksheet = XLSX.utils.json_to_sheet(dataExcel);
+        const wscols = [{wch: 5}, {wch: 22}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 40}, {wch: 10}, {wch: 15}];
+        worksheet['!cols'] = wscols;
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Transaksi");
+        XLSX.writeFile(workbook, `Rekap_Enam_Shoes_Care_${new Date().toLocaleDateString('id-ID')}.xlsx`);
+    }
+
+    function hapusData(id) {
+        if (ROLE !== 'admin') return alert("Hanya Admin yang bisa menghapus data!");
+        if(confirm("Hapus baris ini?")) {
+            let db = JSON.parse(localStorage.getItem('cuciSepatuDB')) || [];
+            db = db.filter(x => x.id !== id);
+            localStorage.setItem('cuciSepatuDB', JSON.stringify(db));
+            muatData();
+        }
+    }
+
+    function hapusSemuaData() {
+        if (ROLE !== 'admin') return alert("Hanya Admin yang bisa menghapus semua data!");
+        if (confirm("Hapus SEMUA data permanen?") && confirm("Anda yakin?")) {
+            localStorage.removeItem('cuciSepatuDB');
+            muatData();
+        }
+    }
+
+    function backupData() {
+        const db = localStorage.getItem('cuciSepatuDB');
+        if (!db || db === "[]") return alert("Tidak ada data!");
+        const blob = new Blob([db], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url; a.download = `Backup_Enam_Shoes_Care_${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+    }
+
+    function prosesImport(event) {
+        if (ROLE !== 'admin') return alert("Hanya Admin yang bisa melakukan Restore data!");
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                if (Array.isArray(data)) {
+                    localStorage.setItem('cuciSepatuDB', JSON.stringify(data));
+                    alert("Data Berhasil di Restore!");
+                    muatData();
+                }
+            } catch (err) { alert("File tidak valid!"); }
+        };
+        reader.readAsText(file);
+    }
+
+    window.onload = muatData;
+</script>
+</body>
+</html>
