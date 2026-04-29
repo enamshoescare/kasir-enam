@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Rekapan - Enam Shoes Care</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
@@ -17,49 +17,146 @@
             --card-bg: #ffffff;
         }
 
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg); padding: 0; margin: 0; color: #1e293b; }
+        body { 
+            font-family: 'Inter', -apple-system, sans-serif; 
+            background-color: var(--bg); 
+            padding: 0; 
+            margin: 0; 
+            color: #1e293b; 
+            -webkit-tap-highlight-color: transparent;
+        }
         
+        /* NAV BAR RESPONSIVE */
         .nav-bar { 
-            background: white; padding: 10px; display: flex; justify-content: space-around; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;
+            background: white; 
+            padding: 5px; 
+            display: flex; 
+            justify-content: space-around; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100;
         }
         .nav-btn { 
-            padding: 12px; border: none; background: transparent; font-weight: bold; 
-            color: var(--secondary); text-decoration: none; font-size: 14px; flex: 1; text-align: center;
+            padding: 12px 5px; 
+            border: none; 
+            background: transparent; 
+            font-weight: bold; 
+            color: var(--secondary); 
+            text-decoration: none; 
+            font-size: 13px; 
+            flex: 1; 
+            text-align: center;
         }
         .nav-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
 
-        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+        .container { max-width: 900px; margin: 15px auto; padding: 0 12px; box-sizing: border-box; }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .stat-card { background: white; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .stat-label { font-size: 14px; color: #475569; margin-bottom: 8px; display: block; }
-        .stat-value { font-size: 24px; font-weight: 800; color: var(--primary); }
+        /* STATS GRID RESPONSIVE */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        .stat-card { background: white; padding: 15px; border-radius: 15px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .stat-label { font-size: 12px; color: #475569; margin-bottom: 5px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-value { font-size: 18px; font-weight: 800; color: var(--primary); display: block; overflow: hidden; text-overflow: ellipsis; }
 
-        .filter-card { background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .filter-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .input-group { display: flex; flex-direction: column; gap: 8px; }
-        .input-group label { font-size: 12px; font-weight: bold; color: #64748b; }
-        .input-group input { padding: 12px; border: 1px solid #e2e8f0; border-radius: 10px; outline: none; font-size: 14px; background: #f8fafc; }
-        .reset-link { text-align: right; margin-top: 10px; display: block; font-size: 12px; color: var(--primary); text-decoration: none; cursor: pointer; }
+        /* FILTER RESPONSIVE */
+        .filter-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .filter-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        
+        /* Pada layar sangat kecil, filter jadi satu kolom */
+        @media (max-width: 400px) {
+            .filter-row { grid-template-columns: 1fr; }
+        }
 
-        .table-card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .table-container { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
-        th { text-align: left; padding: 15px 10px; border-bottom: 2px solid #f1f5f9; color: #64748b; }
-        td { padding: 15px 10px; border-bottom: 1px solid #f1f5f9; color: #334155; }
+        .input-group { display: flex; flex-direction: column; gap: 5px; }
+        .input-group label { font-size: 11px; font-weight: bold; color: #64748b; }
+        .input-group input { 
+            padding: 10px; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 10px; 
+            outline: none; 
+            font-size: 14px; 
+            background: #f8fafc; 
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .reset-link { text-align: right; margin-top: 10px; display: block; font-size: 12px; color: var(--primary); text-decoration: none; cursor: pointer; font-weight: 600; }
+
+        /* TABLE RESPONSIVE */
+        .table-card { background: white; padding: 10px; border-radius: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .table-container { 
+            overflow-x: auto; 
+            -webkit-overflow-scrolling: touch; /* Scroll halus di iOS */
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 500px; }
+        th { text-align: left; padding: 12px 8px; border-bottom: 2px solid #f1f5f9; color: #64748b; font-weight: 700; }
+        td { padding: 12px 8px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: middle; }
         .col-nama { font-weight: bold; color: #000; }
-        .btn-hapus { color: var(--danger); border: none; background: none; cursor: pointer; font-size: 16px; }
+        .btn-hapus { 
+            color: var(--danger); 
+            border: none; 
+            background: #fee2e2; 
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer; 
+            font-size: 14px; 
+        }
 
-        .footer-section { margin-top: 30px; display: flex; flex-direction: column; gap: 15px; align-items: center; }
-        .btn-large-excel { width: 100%; background-color: var(--success); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .backup-container { width: 100%; border: 2px dashed var(--warning); border-radius: 15px; padding: 20px; background-color: #fffbeb; box-sizing: border-box; text-align: center; }
-        .backup-title { color: #92400e; font-weight: 800; font-size: 14px; margin-bottom: 15px; text-transform: uppercase; }
-        .backup-buttons { display: flex; gap: 10px; }
-        .btn-backup-json { flex: 1; background-color: var(--warning); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
-        .btn-restore-json { flex: 1; background-color: var(--info); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
-        .btn-delete-all { margin-top: 10px; color: var(--danger); background: none; border: none; font-weight: bold; font-size: 12px; cursor: pointer; text-transform: uppercase; }
-        .empty-state { text-align: center; padding: 40px; color: var(--secondary); }
+        /* FOOTER & BUTTONS RESPONSIVE */
+        .footer-section { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; align-items: center; padding-bottom: 30px; }
+        .btn-large-excel { 
+            width: 100%; 
+            background-color: var(--success); 
+            color: white; 
+            border: none; 
+            padding: 14px; 
+            border-radius: 12px; 
+            font-weight: bold; 
+            font-size: 15px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+            box-shadow: 0 4px 6px rgba(22, 101, 52, 0.2);
+        }
+        
+        .backup-container { 
+            width: 100%; 
+            border: 2px dashed #fcd34d; 
+            border-radius: 15px; 
+            padding: 15px; 
+            background-color: #fffbeb; 
+            box-sizing: border-box; 
+            text-align: center; 
+        }
+        .backup-title { color: #92400e; font-weight: 800; font-size: 12px; margin-bottom: 12px; text-transform: uppercase; }
+        .backup-buttons { display: flex; gap: 8px; }
+        .btn-backup-json, .btn-restore-json { 
+            flex: 1; 
+            color: white; 
+            border: none; 
+            padding: 12px 5px; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            font-size: 12px;
+            cursor: pointer; 
+        }
+        .btn-backup-json { background-color: var(--warning); }
+        .btn-restore-json { background-color: var(--info); }
+        
+        .btn-delete-all { 
+            margin-top: 10px; 
+            color: var(--danger); 
+            background: none; 
+            border: none; 
+            font-weight: bold; 
+            font-size: 11px; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            padding: 10px;
+        }
+        .empty-state { text-align: center; padding: 30px; color: var(--secondary); font-size: 14px; }
     </style>
 </head>
 <body>
@@ -73,11 +170,11 @@
     <div class="container">
         <div class="stats-grid">
             <div class="stat-card">
-                <span class="stat-label">Total Sepatu</span>
+                <span class="stat-label">Sepatu</span>
                 <span id="totalSepatu" class="stat-value">0</span>
             </div>
             <div class="stat-card">
-                <span class="stat-label">Total Omzet</span>
+                <span class="stat-label">Omzet</span>
                 <span id="totalOmzet" class="stat-value">Rp 0</span>
             </div>
         </div>
@@ -85,11 +182,11 @@
         <div class="filter-card">
             <div class="filter-row">
                 <div class="input-group">
-                    <label>Cari Nama:</label>
-                    <input type="text" id="searchInput" placeholder="Nama..." onkeyup="muatData()">
+                    <label>Nama Pelanggan:</label>
+                    <input type="text" id="searchInput" placeholder="Cari nama..." onkeyup="muatData()">
                 </div>
                 <div class="input-group">
-                    <label>Cari Tanggal:</label>
+                    <label>Pilih Tanggal:</label>
                     <input type="date" id="dateInput" onchange="muatData()">
                 </div>
             </div>
@@ -116,20 +213,22 @@
 
         <div class="footer-section">
             <button class="btn-large-excel" onclick="downloadExcel()">📊 Download Excel</button>
+            
             <div class="backup-container">
-                <div class="backup-title">Keamanan Data (Backup/Restore)</div>
+                <div class="backup-title">Pemeliharaan Data</div>
                 <div class="backup-buttons">
                     <button class="btn-backup-json" onclick="backupData()">Backup JSON</button>
                     <input type="file" id="importFile" style="display: none;" accept=".json" onchange="prosesImport(event)">
                     <button class="btn-restore-json" id="btnRestore" onclick="document.getElementById('importFile').click()">Restore JSON</button>
                 </div>
             </div>
+            
             <button class="btn-delete-all" id="btnDeleteAll" onclick="hapusSemuaData()">Hapus Semua Data Permanen</button>
         </div>
     </div>
 
 <script>
-    // --- SISTEM KEAMANAN ROLE ---
+    // Logika JavaScript tetap 100% sama dengan milik Anda
     const ROLE = sessionStorage.getItem('role');
 
     function checkAuth() {
@@ -151,10 +250,11 @@
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
         const searchDate = document.getElementById('dateInput').value; 
         
-        // Sembunyikan fitur sensitif jika Staff
         if (ROLE === 'staff') {
-            document.getElementById('btnRestore').style.display = 'none';
-            document.getElementById('btnDeleteAll').style.display = 'none';
+            const resBtn = document.getElementById('btnRestore');
+            const delBtn = document.getElementById('btnDeleteAll');
+            if(resBtn) resBtn.style.display = 'none';
+            if(delBtn) delBtn.style.display = 'none';
         }
 
         let omzetTotal = 0;
@@ -196,7 +296,6 @@
                                        .trim();
             if (detailTampil.endsWith(',')) detailTampil = detailTampil.slice(0, -1);
 
-            // Kolom aksi hanya ada tombol hapus jika Admin
             const kolomAksi = ROLE === 'admin' 
                 ? `<td><button class="btn-hapus" onclick="hapusData(${t.id})">✕</button></td>`
                 : `<td>-</td>`;
@@ -205,7 +304,7 @@
                 <tr>
                     <td>${t.tgl.split(',')[0]}</td>
                     <td class="col-nama">${t.nama}</td>
-                    <td>${detailTampil}</td>
+                    <td><div style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${detailTampil}</div></td>
                     <td>${t.total.toLocaleString('id-ID')}</td>
                     ${kolomAksi}
                 </tr>
