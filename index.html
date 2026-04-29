@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Transaksi - Enam Shoes Care</title>
     <style>
         :root {
@@ -13,82 +13,123 @@
             --bg: #f8fafc;
         }
 
-        body { font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg); padding: 0; margin: 0; color: #1e293b; }
-        
+        /* RESET & BASE */
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            background-color: var(--bg); 
+            padding: 0; 
+            margin: 0; 
+            color: #1e293b; 
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* RESPONSIVE NAVIGATION */
         .nav-bar { 
-            background: white; padding: 10px; display: flex; justify-content: space-around; 
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;
+            background: white; 
+            padding: 8px; 
+            display: flex; 
+            justify-content: center; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100;
+            gap: 5px;
         }
         .nav-btn { 
-            padding: 12px 10px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; 
-            background: transparent; color: var(--secondary); transition: 0.2s; flex: 1; margin: 0 5px; font-size: 13px; text-decoration: none; text-align: center;
+            padding: 10px 5px; 
+            border: none; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            background: transparent; 
+            color: var(--secondary); 
+            transition: 0.2s; 
+            flex: 1; 
+            font-size: 12px; 
+            text-decoration: none; 
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .nav-btn.active { background: #eff6ff; color: var(--primary); }
 
-        .container { max-width: 600px; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin: 20px auto; }
-        
-        .logo-container { text-align: center; margin-bottom: 15px; }
-        .main-logo { max-width: 150px; height: auto; border-radius: 12px; }
-
-        h2 { text-align: center; color: #0f172a; margin-top: 0; font-size: 18px; text-transform: uppercase; }
-        
-        .form-group { margin-bottom: 12px; }
-        label { display: block; margin-bottom: 4px; font-weight: 600; color: var(--secondary); font-size: 13px; }
-        input[type="text"], input[type="number"], select { 
-            width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; font-size: 14px; outline: none;
+        /* CONTAINER ADJUSTMENT */
+        .container { 
+            max-width: 500px; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 20px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            margin: 15px auto; 
         }
-        select { background-color: white; cursor: pointer; }
 
-        .service-box { border: 1px solid #e2e8f0; padding: 10px; border-radius: 12px; background-color: #fcfcfc; }
+        /* MOBILE SPECIFIC RADIUS & SPACING */
+        @media (max-width: 480px) {
+            .container { margin: 10px; padding: 15px; border-radius: 15px; }
+            h2 { font-size: 16px !important; }
+        }
+
+        .logo-container { text-align: center; margin-bottom: 15px; }
+        .main-logo { max-width: 120px; height: auto; border-radius: 12px; }
+
+        h2 { text-align: center; color: #0f172a; margin-top: 0; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; color: var(--secondary); font-size: 12px; }
+        
+        input[type="text"], input[type="number"], select { 
+            width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; 
+            box-sizing: border-box; font-size: 16px; /* 16px prevent auto-zoom on iOS */
+            outline: none; transition: border 0.3s;
+        }
+        input:focus, select:focus { border-color: var(--primary); }
+
+        /* SERVICE LIST RESPONSIVE */
+        .service-box { border: 1px solid #e2e8f0; border-radius: 12px; background-color: #fcfcfc; overflow: hidden; }
         .service-item { 
             display: flex; 
             align-items: center; 
-            gap: 8px;
-            padding: 10px 5px; 
+            padding: 12px 10px; 
             border-bottom: 1px solid #f1f5f9; 
+            gap: 10px;
         }
-        .service-item:last-child { border-bottom: none; }
-        .service-info { flex: 2; font-size: 14px; font-weight: 500; }
-        .service-check { flex: 0.5; text-align: center; }
-        .service-qty { flex: 1; display: flex; justify-content: center; }
-        .service-qty input { width: 50px !important; text-align: center; padding: 8px !important; }
+        .service-info { flex: 1; font-size: 13px; font-weight: 600; line-height: 1.4; }
+        .service-info small { font-weight: normal; font-size: 11px; }
+        
+        .service-qty { display: flex; align-items: center; }
+        .service-qty input { 
+            width: 45px !important; text-align: center; padding: 6px !important; 
+            font-size: 14px; border-radius: 8px;
+        }
         
         .btn-del { 
             background: #fee2e2; color: var(--danger); border: none; border-radius: 8px; 
-            padding: 8px; cursor: pointer; font-size: 12px; transition: 0.2s;
+            min-width: 35px; height: 35px; cursor: pointer; display: flex; align-items: center; justify-content: center;
         }
-        .btn-del:hover { background: var(--danger); color: white; }
 
+        /* SUMMARY AREA */
         .payment-summary { background: #f0fdf4; padding: 15px; border-radius: 15px; border: 1px solid #dcfce7; margin-top: 15px; }
-        .summary-row { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 13px; }
-        .summary-total { font-weight: 800; color: #166534; border-top: 1px dashed #bbf7d0; padding-top: 5px; margin-top: 5px; font-size: 15px; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }
+        .summary-total { font-weight: 800; color: #166534; border-top: 1px dashed #bbf7d0; padding-top: 10px; margin-top: 8px; font-size: 16px; }
 
-        .btn { border: none; border-radius: 10px; padding: 14px; font-weight: 700; cursor: pointer; width: 100%; display: block; text-align: center; color: white; margin-top: 10px; text-decoration: none; font-size: 14px; }
-        .btn-wa { background-color: var(--success); }
+        .btn { border: none; border-radius: 12px; padding: 16px; font-weight: 700; cursor: pointer; width: 100%; display: block; text-align: center; color: white; margin-top: 10px; text-decoration: none; font-size: 15px; }
+        .btn-wa { background-color: var(--success); box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2); }
 
-        #printModal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); }
-        .modal-content { background: white; margin: 20% auto; padding: 30px; border-radius: 20px; width: 85%; max-width: 350px; text-align: center; }
+        /* MODAL */
+        #printModal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(2px); }
+        .modal-content { background: white; margin: 30% auto; padding: 25px; border-radius: 20px; width: 80%; max-width: 320px; text-align: center; }
 
-        /* BAGIAN YANG DIPERBAIKI UNTUK CETAKAN SEMPURNA */
+        /* PRINT SETTINGS */
         @media print {
             @page { margin: 0; size: 58mm auto; }
-            html, body { height: auto; overflow: hidden; }
             body * { visibility: hidden; }
             #notaCetak, #notaCetak * { visibility: visible; }
             #notaCetak { 
-                display: block !important; 
-                position: absolute; 
-                left: 0; 
-                top: 0; 
-                width: 50mm; 
-                padding: 4mm 2mm; 
-                background: white; 
-                font-family: 'Courier New', monospace;
-                font-size: 11px;
-                line-height: 1.3;
-                color: #000;
+                display: block !important; position: absolute; left: 0; top: 0; 
+                width: 50mm; padding: 4mm; background: white; 
+                font-family: 'Courier New', monospace; font-size: 10px; line-height: 1.2; color: #000;
             }
-            .nav-bar, .container, #printModal { display: none !important; }
         }
 
         #notaCetak { display: none; }
@@ -115,18 +156,18 @@
         
         <div class="form-group">
             <label>Nomor WhatsApp</label>
-            <input type="text" id="whatsapp" placeholder="0812xxxx">
+            <input type="number" id="whatsapp" placeholder="0812xxxx" inputmode="tel">
         </div>
         
         <div class="form-group">
             <label>Pilih Layanan</label>
             <div id="serviceList" class="service-box"></div>
             
-            <div id="adminArea" style="margin-top: 10px; padding: 10px; border: 1.2px dashed #cbd5e1; border-radius: 12px; background: #fdfdfd;">
+            <div id="adminArea" style="margin-top: 12px; padding: 12px; border: 1.5px dashed #cbd5e1; border-radius: 12px; background: #fdfdfd;">
                 <label style="font-size: 11px; color: #94a3b8;">+ Tambah Layanan Baru</label>
-                <div style="display: flex; gap: 5px;">
-                    <input type="text" id="newServiceName" placeholder="Nama Layanan" style="flex: 2; padding: 8px; font-size: 12px;">
-                    <input type="number" id="newServicePrice" placeholder="Harga" style="flex: 1; padding: 8px; font-size: 12px;">
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="newServiceName" placeholder="Nama" style="flex: 2; padding: 8px; font-size: 13px;">
+                    <input type="number" id="newServicePrice" placeholder="Rp" style="flex: 1.2; padding: 8px; font-size: 13px;">
                     <button type="button" onclick="tambahLayananBaru()" style="padding: 0 15px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">+</button>
                 </div>
             </div>
@@ -162,19 +203,19 @@
 
     <div id="printModal">
         <div class="modal-content">
-            <h3>Berhasil!</h3>
+            <h3 style="margin-top:0">Berhasil!</h3>
+            <p style="font-size: 14px; color: var(--secondary)">Transaksi telah disimpan.</p>
             <button class="btn" style="background:var(--primary)" onclick="cetakNotaFisik()">🖨️ Cetak Nota</button>
-            <button class="btn" style="background:var(--secondary)" onclick="location.reload()">❌ Selesai</button>
+            <button class="btn" style="background:var(--secondary); padding: 12px;" onclick="location.reload()">❌ Selesai</button>
         </div>
     </div>
 
     <div id="notaCetak">
         <center>
-            <img src="logo.png" alt="Logo" style="max-width: 25mm; margin-bottom: 5px;">
-            <h3 style="margin: 0; font-size: 13px;">ENAM SHOES CARE</h3>
+            <img src="logo.png" alt="Logo" style="max-width: 20mm; margin-bottom: 5px;">
+            <h3 style="margin: 0; font-size: 12px;">ENAM SHOES CARE</h3>
             <div class="line"></div>
         </center>
-        
         <div id="notaInv" class="text-bold"></div>
         <div id="notaTgl"></div>
         <div id="notaNama"></div>
@@ -183,184 +224,171 @@
         <div class="line"></div>
         <div id="notaDetail"></div>
         <div class="line"></div>
-        
         <div class="flex-between"><span>Subtotal:</span><span id="nSub"></span></div>
         <div class="flex-between"><span>Diskon:</span><span id="nDisk"></span></div>
-        <div class="flex-between text-bold" style="font-size: 12px; margin-top:2px;"><span>TOTAL:</span><span id="nTotal"></span></div>
+        <div class="flex-between text-bold" style="font-size: 11px; margin-top:2px;"><span>TOTAL:</span><span id="nTotal"></span></div>
         <div class="flex-between"><span>BAYAR:</span><span id="nBayar"></span></div>
         <div class="flex-between"><span>KEMBALI:</span><span id="nKembali"></span></div>
-        
         <center style="margin-top: 15px;">Terima Kasih</center>
     </div>
 
-<script>
-    // --- PENGECEKAN LOGIN & ROLE ---
-    const USER_ROLE = sessionStorage.getItem('role');
-    
-    function checkAuth() {
-        if (!USER_ROLE) {
+    <script>
+        const USER_ROLE = sessionStorage.getItem('role');
+        
+        function checkAuth() {
+            if (!USER_ROLE) { window.location.href = 'login.html'; }
+        }
+
+        function logout() {
+            sessionStorage.clear();
             window.location.href = 'login.html';
         }
-    }
 
-    function logout() {
-        sessionStorage.clear();
-        window.location.href = 'login.html';
-    }
+        const DEFAULT_LAYANAN = [
+            { nama: 'Deep Clean', harga: 30000 },
+            { nama: 'Unyellowing', harga: 40000 }, 
+            { nama: 'Kids Shoes', harga: 25000 },
+            { nama: 'Flat Shoes', harga: 25000 },
+            { nama: 'Repaint', harga: 90000 }
+        ];
 
-    const DEFAULT_LAYANAN = [
-        { nama: 'Deep Clean', harga: 30000 },
-        { nama: 'Unyellowing', harga: 40000 }, 
-        { nama: 'Kids Shoes', harga: 25000 },
-        { nama: 'Flat Shoes', harga: 25000 },
-        { nama: 'Repaint', harga: 90000 }
-    ];
+        let tTerakhir = null;
 
-    let tTerakhir = null;
+        function init() {
+            checkAuth();
+            if (USER_ROLE === 'staff') {
+                const adminArea = document.getElementById('adminArea');
+                if(adminArea) adminArea.style.display = 'none';
+            }
 
-    function init() {
-        checkAuth();
-        
-        // Sembunyikan fitur tambah layanan jika staff
-        if (USER_ROLE === 'staff') {
-            const adminArea = document.getElementById('adminArea');
-            if(adminArea) adminArea.style.display = 'none';
+            let stored = JSON.parse(localStorage.getItem('masterLayanan'));
+            if (!stored) {
+                localStorage.setItem('masterLayanan', JSON.stringify(DEFAULT_LAYANAN));
+                stored = DEFAULT_LAYANAN;
+            }
+
+            document.getElementById('serviceList').innerHTML = stored.map((s, index) => {
+                const btnHapus = USER_ROLE === 'admin' 
+                    ? `<button class="btn-del" onclick="hapusLayanan(${index})">🗑️</button>` 
+                    : '';
+
+                return `
+                    <div class="service-item">
+                        <input type="checkbox" class="layanan" value="${s.harga}" data-nama="${s.nama}" onchange="hitungTotalOtomatis()" style="width:22px;height:22px;">
+                        <div class="service-info">${s.nama}<br><small style="color:#94a3b8">Rp ${s.harga.toLocaleString('id-ID')}</small></div>
+                        <div class="service-qty">
+                            <input type="number" class="qty" value="1" min="1" oninput="hitungTotalOtomatis()">
+                        </div>
+                        ${btnHapus}
+                    </div>
+                `;
+            }).join('');
+            
+            hitungTotalOtomatis();
         }
 
-        let stored = JSON.parse(localStorage.getItem('masterLayanan'));
-        if (!stored) {
-            localStorage.setItem('masterLayanan', JSON.stringify(DEFAULT_LAYANAN));
-            stored = DEFAULT_LAYANAN;
-        }
-
-        document.getElementById('serviceList').innerHTML = stored.map((s, index) => {
-            // Hanya tampilkan tombol hapus jika admin
-            const btnHapus = USER_ROLE === 'admin' 
-                ? `<button class="btn-del" onclick="hapusLayanan(${index})">🗑️</button>` 
-                : '';
-
-            return `
-                <div class="service-item">
-                    <div class="service-check">
-                        <input type="checkbox" class="layanan" value="${s.harga}" data-nama="${s.nama}" onchange="hitungTotalOtomatis()" style="width:18px;height:18px;">
-                    </div>
-                    <div class="service-info">${s.nama}<br><small style="color:#94a3b8">Rp ${s.harga.toLocaleString('id-ID')}</small></div>
-                    <div class="service-qty">
-                        <input type="number" class="qty" value="1" min="1" oninput="hitungTotalOtomatis()">
-                    </div>
-                    ${btnHapus}
-                </div>
-            `;
-        }).join('');
-        
-        hitungTotalOtomatis();
-    }
-
-    function tambahLayananBaru() {
-        if (USER_ROLE !== 'admin') return alert("Akses ditolak!");
-        const nama = document.getElementById('newServiceName').value;
-        const harga = parseInt(document.getElementById('newServicePrice').value);
-        if (!nama || !harga) return alert("Isi nama dan harga!");
-        const stored = JSON.parse(localStorage.getItem('masterLayanan'));
-        stored.push({ nama, harga });
-        localStorage.setItem('masterLayanan', JSON.stringify(stored));
-        document.getElementById('newServiceName').value = "";
-        document.getElementById('newServicePrice').value = "";
-        init();
-    }
-
-    function hapusLayanan(index) {
-        if (USER_ROLE !== 'admin') return alert("Akses ditolak!");
-        if (confirm("Hapus layanan ini dari daftar?")) {
+        function tambahLayananBaru() {
+            if (USER_ROLE !== 'admin') return alert("Akses ditolak!");
+            const nama = document.getElementById('newServiceName').value;
+            const harga = parseInt(document.getElementById('newServicePrice').value);
+            if (!nama || !harga) return alert("Isi nama dan harga!");
             const stored = JSON.parse(localStorage.getItem('masterLayanan'));
-            stored.splice(index, 1);
+            stored.push({ nama, harga });
             localStorage.setItem('masterLayanan', JSON.stringify(stored));
+            document.getElementById('newServiceName').value = "";
+            document.getElementById('newServicePrice').value = "";
             init();
         }
-    }
 
-    function hitungTotalOtomatis() {
-        let sub = 0;
-        document.querySelectorAll('.service-item').forEach(item => {
-            const cb = item.querySelector('.layanan');
-            if (cb.checked) {
-                const qty = parseInt(item.querySelector('.qty').value) || 0;
-                sub += parseInt(cb.value) * qty;
+        function hapusLayanan(index) {
+            if (USER_ROLE !== 'admin') return alert("Akses ditolak!");
+            if (confirm("Hapus layanan ini dari daftar?")) {
+                const stored = JSON.parse(localStorage.getItem('masterLayanan'));
+                stored.splice(index, 1);
+                localStorage.setItem('masterLayanan', JSON.stringify(stored));
+                init();
             }
-        });
-        const diskon = parseInt(document.getElementById('diskon').value) || 0;
-        const total = sub - diskon;
-        const bayar = parseInt(document.getElementById('bayar').value) || 0;
-        
-        document.getElementById('txtSubtotal').innerText = "Rp " + sub.toLocaleString('id-ID');
-        document.getElementById('txtDiskon').innerText = "- Rp " + diskon.toLocaleString('id-ID');
-        document.getElementById('txtTotalAkhir').innerText = "Rp " + (total < 0 ? 0 : total).toLocaleString('id-ID');
-        document.getElementById('txtKembalian').innerText = "Rp " + (bayar - total < 0 ? 0 : bayar - total).toLocaleString('id-ID');
-        return { sub, diskon, total, bayar };
-    }
+        }
 
-    function prosesTransaksi() {
-        const nama = document.getElementById('nama').value;
-        let wa = document.getElementById('whatsapp').value;
-        const metode = document.getElementById('metodeBayar').value;
-        const calc = hitungTotalOtomatis();
+        function hitungTotalOtomatis() {
+            let sub = 0;
+            document.querySelectorAll('.service-item').forEach(item => {
+                const cb = item.querySelector('.layanan');
+                if (cb.checked) {
+                    const qty = parseInt(item.querySelector('.qty').value) || 0;
+                    sub += parseInt(cb.value) * qty;
+                }
+            });
+            const diskon = parseInt(document.getElementById('diskon').value) || 0;
+            const total = sub - diskon;
+            const bayar = parseInt(document.getElementById('bayar').value) || 0;
+            
+            document.getElementById('txtSubtotal').innerText = "Rp " + sub.toLocaleString('id-ID');
+            document.getElementById('txtDiskon').innerText = "- Rp " + diskon.toLocaleString('id-ID');
+            document.getElementById('txtTotalAkhir').innerText = "Rp " + (total < 0 ? 0 : total).toLocaleString('id-ID');
+            document.getElementById('txtKembalian').innerText = "Rp " + (bayar - total < 0 ? 0 : bayar - total).toLocaleString('id-ID');
+            return { sub, diskon, total, bayar };
+        }
 
-        if(!nama || !wa || calc.sub === 0) return alert("Lengkapi data transaksi!");
+        function prosesTransaksi() {
+            const nama = document.getElementById('nama').value;
+            let wa = document.getElementById('whatsapp').value;
+            const metode = document.getElementById('metodeBayar').value;
+            const calc = hitungTotalOtomatis();
 
-        if (wa.startsWith('0')) wa = '62' + wa.slice(1);
-        if (!wa.startsWith('62')) wa = '62' + wa;
+            if(!nama || !wa || calc.sub === 0) return alert("Lengkapi data transaksi!");
 
-        let detailHtml = "", detailWA = "", layananSimpan = "", jmlSpt = 0;
-        document.querySelectorAll('.service-item').forEach(item => {
-            const cb = item.querySelector('.layanan');
-            if (cb.checked) {
-                let q = parseInt(item.querySelector('.qty').value);
-                let hargaItem = parseInt(cb.value) * q;
-                jmlSpt += q;
-                detailHtml += `<div class="flex-between"><span>- ${cb.dataset.nama} (${q}x)</span><span>Rp ${hargaItem.toLocaleString('id-ID')}</span></div>`;
-                detailWA += `${cb.dataset.nama} (${q}x)\n   Rp ${hargaItem.toLocaleString('id-ID')}\n`;
-                layananSimpan += `${cb.dataset.nama} (${q}x) `;
-            }
-        });
+            if (wa.startsWith('0')) wa = '62' + wa.slice(1);
+            if (!wa.startsWith('62')) wa = '62' + wa;
 
-        tTerakhir = {
-            id: Date.now(),
-            inv: "INV-"+Math.floor(1000+Math.random()*9000),
-            tgl: new Date().toLocaleString('id-ID'),
-            nama, wa, metode, sub: calc.sub, diskon: calc.diskon, total: calc.total, bayar: calc.bayar, kembali: calc.bayar - calc.total,
-            sepatu: jmlSpt, 
-            detailHtml: detailHtml, 
-            waList: detailWA,
-            layanan: layananSimpan.trim() 
-        };
+            let detailHtml = "", detailWA = "", layananSimpan = "", jmlSpt = 0;
+            document.querySelectorAll('.service-item').forEach(item => {
+                const cb = item.querySelector('.layanan');
+                if (cb.checked) {
+                    let q = parseInt(item.querySelector('.qty').value);
+                    let hargaItem = parseInt(cb.value) * q;
+                    jmlSpt += q;
+                    detailHtml += `<div class="flex-between"><span>- ${cb.dataset.nama} (${q}x)</span><span>Rp ${hargaItem.toLocaleString('id-ID')}</span></div>`;
+                    detailWA += `${cb.dataset.nama} (${q}x)\n   Rp ${hargaItem.toLocaleString('id-ID')}\n`;
+                    layananSimpan += `${cb.dataset.nama} (${q}x) `;
+                }
+            });
 
-        const pesanWA = `*ENAM SHOES CARE*\n--------------------------------\nNo. Nota : ${tTerakhir.inv}\nTanggal  : ${tTerakhir.tgl}\nNama     : ${tTerakhir.nama}\nMetode   : ${tTerakhir.metode}\n--------------------------------\n*LAYANAN:*\n${tTerakhir.waList}--------------------------------\nSubtotal : Rp ${tTerakhir.sub.toLocaleString('id-ID')}\nDiskon   : Rp ${tTerakhir.diskon.toLocaleString('id-ID')}\n*TOTAL     : Rp ${tTerakhir.total.toLocaleString('id-ID')}*\n--------------------------------\nBayar    : Rp ${tTerakhir.bayar.toLocaleString('id-ID')}\nKembali  : Rp ${tTerakhir.kembali.toLocaleString('id-ID')}\n--------------------------------\n*Terima Kasih Telah Mempercayakan*\n*Sepatu Anda Kepada Kami!*`;
+            tTerakhir = {
+                id: Date.now(),
+                inv: "INV-"+Math.floor(1000+Math.random()*9000),
+                tgl: new Date().toLocaleString('id-ID'),
+                nama, wa, metode, sub: calc.sub, diskon: calc.diskon, total: calc.total, bayar: calc.bayar, kembali: calc.bayar - calc.total,
+                sepatu: jmlSpt, detailHtml, waList: detailWA, layanan: layananSimpan.trim() 
+            };
 
-        const db = JSON.parse(localStorage.getItem('cuciSepatuDB')) || [];
-        db.push(tTerakhir);
-        localStorage.setItem('cuciSepatuDB', JSON.stringify(db));
+            const pesanWA = `*ENAM SHOES CARE*\n--------------------------------\nNo. Nota : ${tTerakhir.inv}\nTanggal  : ${tTerakhir.tgl}\nNama     : ${tTerakhir.nama}\nMetode   : ${tTerakhir.metode}\n--------------------------------\n*LAYANAN:*\n${tTerakhir.waList}--------------------------------\nSubtotal : Rp ${tTerakhir.sub.toLocaleString('id-ID')}\nDiskon   : Rp ${tTerakhir.diskon.toLocaleString('id-ID')}\n*TOTAL     : Rp ${tTerakhir.total.toLocaleString('id-ID')}*\n--------------------------------\nBayar    : Rp ${tTerakhir.bayar.toLocaleString('id-ID')}\nKembali  : Rp ${tTerakhir.kembali.toLocaleString('id-ID')}\n--------------------------------\n*Terima Kasih Telah Mempercayakan*\n*Sepatu Anda Kepada Kami!*`;
 
-        window.open(`https://api.whatsapp.com/send?phone=${wa}&text=${encodeURIComponent(pesanWA)}`, '_blank');
-        document.getElementById('printModal').style.display = 'block';
-    }
+            const db = JSON.parse(localStorage.getItem('cuciSepatuDB')) || [];
+            db.push(tTerakhir);
+            localStorage.setItem('cuciSepatuDB', JSON.stringify(db));
 
-    function cetakNotaFisik() {
-        if (!tTerakhir) return;
-        document.getElementById('notaInv').innerText = tTerakhir.inv;
-        document.getElementById('notaTgl').innerText = "Tgl: " + tTerakhir.tgl;
-        document.getElementById('notaNama').innerText = "Nama: " + tTerakhir.nama;
-        document.getElementById('notaWA').innerText = "WA  : " + tTerakhir.wa;
-        document.getElementById('notaMetode').innerText = "Metode: " + tTerakhir.metode;
-        document.getElementById('notaDetail').innerHTML = tTerakhir.detailHtml;
-        document.getElementById('nSub').innerText = "Rp " + tTerakhir.sub.toLocaleString('id-ID');
-        document.getElementById('nDisk').innerText = "-Rp " + tTerakhir.diskon.toLocaleString('id-ID');
-        document.getElementById('nTotal').innerText = "Rp " + tTerakhir.total.toLocaleString('id-ID');
-        document.getElementById('nBayar').innerText = "Rp " + tTerakhir.bayar.toLocaleString('id-ID');
-        document.getElementById('nKembali').innerText = "Rp " + tTerakhir.kembali.toLocaleString('id-ID');
-        window.print();
-    }
+            window.open(`https://api.whatsapp.com/send?phone=${wa}&text=${encodeURIComponent(pesanWA)}`, '_blank');
+            document.getElementById('printModal').style.display = 'block';
+        }
 
-    window.onload = init;
-</script>
+        function cetakNotaFisik() {
+            if (!tTerakhir) return;
+            document.getElementById('notaInv').innerText = tTerakhir.inv;
+            document.getElementById('notaTgl').innerText = "Tgl: " + tTerakhir.tgl;
+            document.getElementById('notaNama').innerText = "Nama: " + tTerakhir.nama;
+            document.getElementById('notaWA').innerText = "WA  : " + tTerakhir.wa;
+            document.getElementById('notaMetode').innerText = "Metode: " + tTerakhir.metode;
+            document.getElementById('notaDetail').innerHTML = tTerakhir.detailHtml;
+            document.getElementById('nSub').innerText = "Rp " + tTerakhir.sub.toLocaleString('id-ID');
+            document.getElementById('nDisk').innerText = "-Rp " + tTerakhir.diskon.toLocaleString('id-ID');
+            document.getElementById('nTotal').innerText = "Rp " + tTerakhir.total.toLocaleString('id-ID');
+            document.getElementById('nBayar').innerText = "Rp " + tTerakhir.bayar.toLocaleString('id-ID');
+            document.getElementById('nKembali').innerText = "Rp " + tTerakhir.kembali.toLocaleString('id-ID');
+            window.print();
+        }
+
+        window.onload = init;
+    </script>
 </body>
 </html>
