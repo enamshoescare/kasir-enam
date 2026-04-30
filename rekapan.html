@@ -4,415 +4,130 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Rekapan - Enam Shoes Care</title>
+    <!-- Library Eksternal -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --secondary: #64748b;
-            --success: #166534;
-            --warning: #f59e0b;
-            --info: #64748b;
-            --danger: #ef4444;
-            --bg: #f1f5f9;
-            --card-bg: #ffffff;
-        }
-
-        body { 
-            font-family: 'Inter', -apple-system, sans-serif; 
-            background-color: var(--bg); 
-            padding: 0; 
-            margin: 0; 
-            color: #1e293b; 
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        /* NAV BAR RESPONSIVE */
-        .nav-bar { 
-            background: white; 
-            padding: 5px; 
-            display: flex; 
-            justify-content: space-around; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
-            position: sticky; 
-            top: 0; 
-            z-index: 100;
-        }
-        .nav-btn { 
-            padding: 12px 5px; 
-            border: none; 
-            background: transparent; 
-            font-weight: bold; 
-            color: var(--secondary); 
-            text-decoration: none; 
-            font-size: 13px; 
-            flex: 1; 
-            text-align: center;
-        }
-        .nav-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
-
-        .container { max-width: 900px; margin: 15px auto; padding: 0 12px; box-sizing: border-box; }
-
-        /* STATS GRID RESPONSIVE */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-        .stat-card { background: white; padding: 15px; border-radius: 15px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .stat-label { font-size: 12px; color: #475569; margin-bottom: 5px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-value { font-size: 18px; font-weight: 800; color: var(--primary); display: block; overflow: hidden; text-overflow: ellipsis; }
-
-        /* FILTER RESPONSIVE */
-        .filter-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .filter-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        
-        /* Pada layar sangat kecil, filter jadi satu kolom */
-        @media (max-width: 400px) {
-            .filter-row { grid-template-columns: 1fr; }
-        }
-
-        .input-group { display: flex; flex-direction: column; gap: 5px; }
-        .input-group label { font-size: 11px; font-weight: bold; color: #64748b; }
-        .input-group input { 
-            padding: 10px; 
-            border: 1px solid #e2e8f0; 
-            border-radius: 10px; 
-            outline: none; 
-            font-size: 14px; 
-            background: #f8fafc; 
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .reset-link { text-align: right; margin-top: 10px; display: block; font-size: 12px; color: var(--primary); text-decoration: none; cursor: pointer; font-weight: 600; }
-
-        /* TABLE RESPONSIVE */
-        .table-card { background: white; padding: 10px; border-radius: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .table-container { 
-            overflow-x: auto; 
-            -webkit-overflow-scrolling: touch; /* Scroll halus di iOS */
-        }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 500px; }
-        th { text-align: left; padding: 12px 8px; border-bottom: 2px solid #f1f5f9; color: #64748b; font-weight: 700; }
-        td { padding: 12px 8px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: middle; }
-        .col-nama { font-weight: bold; color: #000; }
-        .btn-hapus { 
-            color: var(--danger); 
-            border: none; 
-            background: #fee2e2; 
-            padding: 6px 10px;
-            border-radius: 6px;
-            cursor: pointer; 
-            font-size: 14px; 
-        }
-
-        /* FOOTER & BUTTONS RESPONSIVE */
-        .footer-section { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; align-items: center; padding-bottom: 30px; }
-        .btn-large-excel { 
-            width: 100%; 
-            background-color: var(--success); 
-            color: white; 
-            border: none; 
-            padding: 14px; 
-            border-radius: 12px; 
-            font-weight: bold; 
-            font-size: 15px; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px; 
-            box-shadow: 0 4px 6px rgba(22, 101, 52, 0.2);
-        }
-        
-        .backup-container { 
-            width: 100%; 
-            border: 2px dashed #fcd34d; 
-            border-radius: 15px; 
-            padding: 15px; 
-            background-color: #fffbeb; 
-            box-sizing: border-box; 
-            text-align: center; 
-        }
-        .backup-title { color: #92400e; font-weight: 800; font-size: 12px; margin-bottom: 12px; text-transform: uppercase; }
-        .backup-buttons { display: flex; gap: 8px; }
-        .btn-backup-json, .btn-restore-json { 
-            flex: 1; 
-            color: white; 
-            border: none; 
-            padding: 12px 5px; 
-            border-radius: 10px; 
-            font-weight: bold; 
-            font-size: 12px;
-            cursor: pointer; 
-        }
-        .btn-backup-json { background-color: var(--warning); }
-        .btn-restore-json { background-color: var(--info); }
-        
-        .btn-delete-all { 
-            margin-top: 10px; 
-            color: var(--danger); 
-            background: none; 
-            border: none; 
-            font-weight: bold; 
-            font-size: 11px; 
-            cursor: pointer; 
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-            padding: 10px;
-        }
-        .empty-state { text-align: center; padding: 30px; color: var(--secondary); font-size: 14px; }
-    </style>
+    <!-- Hubungkan ke file CSS -->
+    <link rel="stylesheet" href="rekap-style.css">
 </head>
 <body>
 
+    <!-- Area Nota (Hidden by default) -->
+    <div id="notaCetak">
+        <center>
+            <img src="logo.png" class="nota-logo"> 
+            <h3 style="margin: 0; font-size: 12px;">ENAM SHOES CARE</h3>
+            <div class="line"></div>
+        </center>
+        <div id="notaInv" class="text-bold"></div>
+        <div id="notaTgl"></div>
+        <div id="notaNama"></div>
+        <div id="notaWA"></div> 
+        <div id="notaMetode"></div>
+        <div id="notaStatus"></div>
+        <div id="notaDetail"></div>
+        <div class="line"></div>
+        <div class="flex-between"><span>Subtotal:</span><span id="nSub"></span></div>
+        <div class="flex-between"><span>Diskon:</span><span id="nDisk"></span></div>
+        <div class="flex-between text-bold" style="font-size: 11px; margin-top:2px;">
+            <span>TOTAL:</span><span id="nTotal"></span>
+        </div>
+        <div class="flex-between"><span>BAYAR:</span><span id="nBayar"></span></div>
+        <div class="flex-between"><span id="labelNKembali">KEMBALI:</span><span id="nKembali"></span></div>
+        <center style="margin-top: 15px;">Terima Kasih</center>
+    </div>
+
+    <!-- Modal Pembayaran -->
+    <div id="modalBayar" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Penyelesaian Pembayaran</div>
+            <input type="hidden" id="mId">
+            <input type="hidden" id="mSub">
+            
+            <div class="input-group" style="margin-bottom:10px">
+                <label>Metode Pembayaran:</label>
+                <select id="mMetode">
+                    <option value="Tunai">Tunai</option>
+                    <option value="Transfer">Transfer</option>
+                </select>
+            </div>
+            <div class="input-group" style="margin-bottom:10px">
+                <label>Diskon (Rp):</label>
+                <input type="number" id="mDiskon" oninput="hitungModal()">
+            </div>
+            <div class="input-group" style="margin-bottom:10px">
+                <label>Total Akhir (Rp):</label>
+                <input type="number" id="mTotal" class="input-readonly" readonly>
+            </div>
+            <div class="input-group" style="margin-bottom:10px">
+                <label>Uang yang Dibayar (Rp):</label>
+                <input type="number" id="mUangBayar" oninput="hitungModal()">
+            </div>
+            <div class="input-group">
+                <label id="labelMKembali">Kembalian (Rp):</label>
+                <input type="number" id="mKembali" class="input-readonly" readonly>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn-modal btn-cancel" onclick="tutupModal()">Batal</button>
+                <button class="btn-modal btn-confirm" onclick="prosesLunas()">Simpan & Lunas</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigasi -->
     <nav class="nav-bar">
         <a href="index.html" class="nav-btn">➕ Transaksi</a>
         <a href="rekapan.html" class="nav-btn active">📊 Rekapan</a>
         <button onclick="logout()" class="nav-btn" style="color: var(--danger);">Logout</button>
     </nav>
 
+    <!-- Konten Utama -->
     <div class="container">
+        <!-- Statistik -->
         <div class="stats-grid">
-            <div class="stat-card">
-                <span class="stat-label">Sepatu</span>
-                <span id="totalSepatu" class="stat-value">0</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-label">Omzet</span>
-                <span id="totalOmzet" class="stat-value">Rp 0</span>
-            </div>
+            <div class="stat-card"><span class="stat-label">Total Sepatu</span><span id="totalSepatu" class="stat-value">0</span></div>
+            <div class="stat-card"><span class="stat-label">Total Omzet (Lunas)</span><span id="totalOmzet" class="stat-value">Rp 0</span></div>
+            <div class="stat-card"><span class="stat-label">Total Cash (Lunas)</span><span id="totalCash" class="stat-value stat-cash">Rp 0</span></div>
+            <div class="stat-card"><span class="stat-label">Total Transfer (Lunas)</span><span id="totalTransfer" class="stat-value stat-transfer">Rp 0</span></div>
         </div>
 
+        <!-- Filter -->
         <div class="filter-card">
             <div class="filter-row">
-                <div class="input-group">
-                    <label>Nama Pelanggan:</label>
-                    <input type="text" id="searchInput" placeholder="Cari nama..." onkeyup="muatData()">
-                </div>
-                <div class="input-group">
-                    <label>Pilih Tanggal:</label>
-                    <input type="date" id="dateInput" onchange="muatData()">
-                </div>
+                <div class="input-group"><label>Nama Pelanggan:</label><input type="text" id="searchInput" placeholder="Cari nama..." onkeyup="muatData()"></div>
+                <div class="input-group"><label>Pilih Tanggal:</label><input type="date" id="dateInput" onchange="muatData()"></div>
             </div>
             <a class="reset-link" onclick="resetFilter()">Reset Filter</a>
         </div>
 
+        <!-- Tabel Data -->
         <div class="table-card">
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr>
-                            <th>Tgl</th>
-                            <th>Nama</th>
-                            <th>Layanan</th>
-                            <th>Total</th>
-                            <th>Aksi</th>
-                        </tr>
+                        <tr><th>Tgl</th><th>Nama</th><th>Layanan</th><th>Metode</th><th>Pembayaran</th><th>Barang</th><th>Total</th><th>Aksi</th></tr>
                     </thead>
                     <tbody id="listRiwayat"></tbody>
                 </table>
-                <div id="noData" class="empty-state" style="display: none;">Data tidak ditemukan.</div>
+                <div id="noData" class="empty-state" style="display: none; text-align: center; padding: 20px;">Data tidak ditemukan.</div>
             </div>
         </div>
 
+        <!-- Tombol Aksi Bawah -->
         <div class="footer-section">
             <button class="btn-large-excel" onclick="downloadExcel()">📊 Download Excel</button>
-            
             <div class="backup-container">
-                <div class="backup-title">Pemeliharaan Data</div>
                 <div class="backup-buttons">
                     <button class="btn-backup-json" onclick="backupData()">Backup JSON</button>
                     <input type="file" id="importFile" style="display: none;" accept=".json" onchange="prosesImport(event)">
                     <button class="btn-restore-json" id="btnRestore" onclick="document.getElementById('importFile').click()">Restore JSON</button>
                 </div>
             </div>
-            
             <button class="btn-delete-all" id="btnDeleteAll" onclick="hapusSemuaData()">Hapus Semua Data Permanen</button>
         </div>
     </div>
 
-<script>
-    // Logika JavaScript tetap 100% sama dengan milik Anda
-    const ROLE = sessionStorage.getItem('role');
-
-    function checkAuth() {
-        if (!ROLE) {
-            window.location.href = 'login.html';
-        }
-    }
-
-    function logout() {
-        sessionStorage.clear();
-        window.location.href = 'login.html';
-    }
-
-    function muatData() {
-        checkAuth();
-        const db = JSON.parse(localStorage.getItem('cuciSepatuDB')) || [];
-        const tbody = document.getElementById('listRiwayat');
-        const noData = document.getElementById('noData');
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        const searchDate = document.getElementById('dateInput').value; 
-        
-        if (ROLE === 'staff') {
-            const resBtn = document.getElementById('btnRestore');
-            const delBtn = document.getElementById('btnDeleteAll');
-            if(resBtn) resBtn.style.display = 'none';
-            if(delBtn) delBtn.style.display = 'none';
-        }
-
-        let omzetTotal = 0;
-        let sepatuTotal = 0;
-        tbody.innerHTML = "";
-
-        const filteredData = db.filter(t => {
-            const matchNama = t.nama.toLowerCase().includes(searchTerm);
-            let matchDate = true;
-            if (searchDate) {
-                const parts = t.tgl.split(',')[0].split('/');
-                const dateFromDB = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
-                matchDate = (dateFromDB === searchDate);
-            }
-            return matchNama && matchDate;
-        });
-
-        if (filteredData.length === 0) {
-            noData.style.display = "block";
-            document.getElementById('totalSepatu').innerText = "0";
-            document.getElementById('totalOmzet').innerText = "Rp 0";
-            return;
-        } else {
-            noData.style.display = "none";
-        }
-
-        filteredData.slice().reverse().forEach(t => {
-            omzetTotal += t.total;
-            sepatuTotal += (t.sepatu || 0);
-            
-            let detailTampil = t.layanan || ""; 
-            if (!detailTampil && (t.waList || t.listWA)) {
-                detailTampil = (t.waList || t.listWA);
-            }
-            
-            detailTampil = detailTampil.replace(/- /g, '')
-                                       .replace(/: Rp [\d.]+/g, '') 
-                                       .replace(/\n/g, ', ')
-                                       .trim();
-            if (detailTampil.endsWith(',')) detailTampil = detailTampil.slice(0, -1);
-
-            const kolomAksi = ROLE === 'admin' 
-                ? `<td><button class="btn-hapus" onclick="hapusData(${t.id})">✕</button></td>`
-                : `<td>-</td>`;
-
-            tbody.innerHTML += `
-                <tr>
-                    <td>${t.tgl.split(',')[0]}</td>
-                    <td class="col-nama">${t.nama}</td>
-                    <td><div style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${detailTampil}</div></td>
-                    <td>${t.total.toLocaleString('id-ID')}</td>
-                    ${kolomAksi}
-                </tr>
-            `;
-        });
-
-        document.getElementById('totalSepatu').innerText = sepatuTotal;
-        document.getElementById('totalOmzet').innerText = "Rp " + omzetTotal.toLocaleString('id-ID');
-    }
-
-    function resetFilter() {
-        document.getElementById('searchInput').value = "";
-        document.getElementById('dateInput').value = "";
-        muatData();
-    }
-
-    function downloadExcel() {
-        const db = JSON.parse(localStorage.getItem('cuciSepatuDB')) || [];
-        if (db.length === 0) return alert("Data kosong!");
-
-        let totalSepatu = 0;
-        let totalBayar = 0;
-        
-        const dataExcel = db.map((t, index) => {
-            totalSepatu += (t.sepatu || 0);
-            totalBayar += (t.total || 0);
-            
-            let detailExcel = t.layanan || t.waList || t.listWA || "";
-            detailExcel = detailExcel.replace(/- /g, '')
-                                     .replace(/: Rp [\d.]+/g, '')
-                                     .replace(/\n/g, ', ')
-                                     .trim();
-            if (detailExcel.endsWith(',')) detailExcel = detailExcel.slice(0, -1);
-
-            return {
-                "No": index + 1,
-                "Tanggal": t.tgl,
-                "Invoice": t.inv || "",
-                "Nama Pelanggan": t.nama,
-                "WhatsApp": t.wa || "",
-                "Layanan": detailExcel,
-                "Jumlah": t.sepatu,
-                "Total": t.total
-            };
-        });
-
-        dataExcel.push({}); 
-        dataExcel.push({
-            "Layanan": "TOTAL KESELURUHAN",
-            "Jumlah": totalSepatu,
-            "Total": totalBayar
-        });
-
-        const worksheet = XLSX.utils.json_to_sheet(dataExcel);
-        const wscols = [{wch: 5}, {wch: 22}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 40}, {wch: 10}, {wch: 15}];
-        worksheet['!cols'] = wscols;
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Transaksi");
-        XLSX.writeFile(workbook, `Rekap_Enam_Shoes_Care_${new Date().toLocaleDateString('id-ID')}.xlsx`);
-    }
-
-    function hapusData(id) {
-        if (ROLE !== 'admin') return alert("Hanya Admin yang bisa menghapus data!");
-        if(confirm("Hapus baris ini?")) {
-            let db = JSON.parse(localStorage.getItem('cuciSepatuDB')) || [];
-            db = db.filter(x => x.id !== id);
-            localStorage.setItem('cuciSepatuDB', JSON.stringify(db));
-            muatData();
-        }
-    }
-
-    function hapusSemuaData() {
-        if (ROLE !== 'admin') return alert("Hanya Admin yang bisa menghapus semua data!");
-        if (confirm("Hapus SEMUA data permanen?") && confirm("Anda yakin?")) {
-            localStorage.removeItem('cuciSepatuDB');
-            muatData();
-        }
-    }
-
-    function backupData() {
-        const db = localStorage.getItem('cuciSepatuDB');
-        if (!db || db === "[]") return alert("Tidak ada data!");
-        const blob = new Blob([db], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url; a.download = `Backup_Enam_Shoes_Care_${new Date().toISOString().split('T')[0]}.json`;
-        a.click();
-    }
-
-    function prosesImport(event) {
-        if (ROLE !== 'admin') return alert("Hanya Admin yang bisa melakukan Restore data!");
-        const file = event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const data = JSON.parse(e.target.result);
-                if (Array.isArray(data)) {
-                    localStorage.setItem('cuciSepatuDB', JSON.stringify(data));
-                    alert("Data Berhasil di Restore!");
-                    muatData();
-                }
-            } catch (err) { alert("File tidak valid!"); }
-        };
-        reader.readAsText(file);
-    }
-
-    window.onload = muatData;
-</script>
+    <!-- Hubungkan ke file JavaScript -->
+    <script src="rekap-script.js"></script>
 </body>
 </html>
