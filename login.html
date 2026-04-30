@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Login - Enam Shoes Care</title>
+    <title>Sistem Akses - Enam Shoes Care</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #2563eb;
-            --primary-hover: #1d4ed8;
+            --danger: #ef4444;
+            --success: #059669;
             --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             --text-dark: #0f172a;
             --text-muted: #64748b;
@@ -17,160 +18,266 @@
         body { 
             font-family: 'Inter', sans-serif; 
             background: var(--bg-gradient);
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh;
-            margin: 0; 
-            padding: 20px;
-            box-sizing: border-box;
-            overscroll-behavior: none;
+            display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box;
         }
 
-        /* Animasi masuk */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .login-card {
+        .card {
             background: rgba(255, 255, 255, 0.95);
             padding: 35px 25px;
             border-radius: 24px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            width: 100%;
-            max-width: 380px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            width: 100%; max-width: 380px;
             text-align: center;
-            animation: fadeIn 0.6s ease-out;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.5);
-            box-sizing: border-box;
+            animation: fadeIn 0.4s ease-out;
         }
 
-        @media (max-width: 350px) {
-            .login-card { padding: 25px 15px; }
-            h2 { font-size: 20px !important; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .hidden { display: none !important; }
+        .logo { max-width: 80px; margin-bottom: 15px; pointer-events: none; }
+        h2 { margin: 0; color: var(--text-dark); font-size: 22px; font-weight: 800; }
+        p { color: var(--text-muted); font-size: 14px; margin-bottom: 25px; }
+
+        .input-group { text-align: left; margin-bottom: 15px; position: relative; }
+        
+        input, select {
+            width: 100%; padding: 14px 16px;
+            border: 1.5px solid #e2e8f0; border-radius: 12px;
+            font-size: 16px; box-sizing: border-box; background: #fdfdfd;
+            font-family: inherit; transition: 0.2s;
         }
 
-        .logo-wrapper { margin-bottom: 20px; }
+        input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37,99,235,0.1); }
 
-        .logo { 
-            max-width: 100px; 
-            height: auto;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        .toggle-pass {
+            position: absolute; right: 15px; top: 14px;
+            font-size: 11px; font-weight: 700; color: var(--primary);
+            cursor: pointer; user-select: none; z-index: 5;
         }
 
-        h2 { 
-            margin: 0 0 8px 0; 
-            color: var(--text-dark); 
-            font-size: 22px; 
-            font-weight: 800;
-            letter-spacing: -0.5px;
+        .btn-main {
+            width: 100%; padding: 14px;
+            background: var(--primary); color: white;
+            border: none; border-radius: 12px;
+            font-weight: 700; cursor: pointer; margin-top: 10px;
         }
 
-        p {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-bottom: 25px;
-            line-height: 1.4;
+        /* Modal Manajemen Pengguna */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.7); display: flex; justify-content: center; align-items: center;
+            z-index: 100; backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: white; padding: 30px; border-radius: 24px;
+            width: 90%; max-width: 400px; max-height: 80vh; overflow-y: auto;
+            text-align: center;
+        }
+        .user-list-container {
+            margin: 20px 0; border: 1px solid #f1f5f9; border-radius: 12px;
+            max-height: 250px; overflow-y: auto;
+        }
+        .user-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 15px; border-bottom: 1px solid #f1f5f9;
+        }
+        .user-item:last-child { border-bottom: none; }
+        .user-info { text-align: left; }
+        .user-info b { font-size: 14px; color: var(--text-dark); display: block; }
+        .user-info i { font-size: 11px; color: var(--text-muted); font-style: normal; }
+        
+        .btn-del {
+            background: #fee2e2; color: #dc2626; border: none;
+            padding: 6px 12px; border-radius: 8px; cursor: pointer; 
+            font-size: 11px; font-weight: 800;
         }
 
-        .input-group {
-            text-align: left;
-            margin-bottom: 12px;
-        }
-
-           input {
-        width: 100%;
-        padding: 14px 16px;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 12px;
-        box-sizing: border-box;
-        font-size: 16px; /* Mencegah auto-zoom di ios */
-        font-family: inherit;
-        transition: all 0.2s ease;
-        background: #fdfdfd;
-        -webkit-appearance: none; /* Tambahkan tanda minus di depan */
-        appearance: none;         /* Tambahkan ini juga agar standar */
-    }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 14px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-top: 10px;
-            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .btn-login:hover { background: var(--primary-hover); }
-        .btn-login:active { transform: scale(0.98); }
-
-        .footer-text {
-            margin-top: 25px;
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        .switch-text { margin-top: 25px; font-size: 13px; color: var(--text-muted); }
+        .switch-text span { color: var(--primary); cursor: pointer; font-weight: 600; text-decoration: underline; }
     </style>
 </head>
 <body>
 
-<div class="login-card">
-    <div class="logo-wrapper">
-        <img src="logo.png" class="logo" alt="Logo Enam Shoes">
+    <!-- HALAMAN LOGIN -->
+    <div id="loginPage" class="card">
+        <img src="logo.png" class="logo">
+        <h2>Enam Shoes</h2>
+        <p>Akses Sistem Kasir</p>
+        <form id="loginForm">
+            <div class="input-group">
+                <input type="text" id="l_user" placeholder="Username" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="l_pass" placeholder="Password" required>
+                <span class="toggle-pass" onclick="toggleView('l_pass')">LIHAT</span>
+            </div>
+            <button type="submit" class="btn-main">Masuk</button>
+        </form>
+        <div class="switch-text">
+            Belum ada akun? <span onclick="showPage('signupPage')">Daftar</span><br><br>
+            <span onclick="openManageUsers()" style="color: #64748b; text-decoration: none; font-size: 11px; border: 1px solid #e2e8f0; padding: 4px 8px; border-radius: 6px;">Kelola User</span>
+        </div>
     </div>
-    <h2>Selamat Datang</h2>
-    <p>Silakan masuk ke akun Kasir Anda</p>
-    
-    <form id="loginForm">
-        <div class="input-group">
-            <input type="text" id="username" placeholder="Username" required autocomplete="username" spellcheck="false">
-        </div>
-        <div class="input-group">
-            <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
-        </div>
-        <button type="submit" class="btn-login">Masuk ke Sistem</button>
-    </form>
 
-    <div class="footer-text">
-        &copy; 2026 Enam Shoes Care
+    <!-- HALAMAN DAFTAR -->
+    <div id="signupPage" class="card hidden">
+        <h2>Daftar Staf</h2>
+        <p>Buat akun akses baru</p>
+        <form id="signupForm">
+            <div class="input-group"><input type="text" id="s_user" placeholder="Username Baru" required></div>
+            <div class="input-group">
+                <input type="password" id="s_pass" placeholder="Password Baru" required>
+                <span class="toggle-pass" onclick="toggleView('s_pass')">LIHAT</span>
+            </div>
+            <div class="input-group">
+                <select id="s_role" onchange="checkRole()">
+                    <option value="staff">Staff / Kasir</option>
+                    <option value="admin">Administrator</option>
+                </select>
+            </div>
+            <div id="pinArea" class="hidden">
+                <div class="input-group">
+                    <input type="password" id="s_pin" placeholder="PIN Otorisasi Admin" inputmode="numeric">
+                </div>
+            </div>
+            <button type="submit" class="btn-main" style="background: var(--success)">Daftar Akun</button>
+        </form>
+        <div class="switch-text">Sudah ada akun? <span onclick="showPage('loginPage')">Login</span></div>
     </div>
-</div>
+
+    <!-- MODAL MANAJEMEN USER -->
+    <div id="manageModal" class="modal hidden">
+        <div class="modal-content">
+            <h3 style="margin:0">Manajemen Pengguna</h3>
+            <p style="font-size: 12px; margin-top:5px">Daftar akun yang tersimpan di perangkat ini.</p>
+            
+            <div class="user-list-container" id="userList">
+                <!-- Data User Muncul Disini -->
+            </div>
+            
+            <button onclick="closeManageUsers()" class="btn-main" style="background: var(--text-dark)">Tutup</button>
+        </div>
+    </div>
 
 <script>
+    const DB_KEY = 'enamShoes_users';
+    const ADMIN_PIN = "132003";
+
+    // --- LOGIKA DATABASE (LocalStorage) ---
+    function initDB() {
+        let data = localStorage.getItem(DB_KEY);
+        if (!data || data === "[]") {
+            const initialUsers = [
+                {user: 'admin', pass: 'wdntr12', role: 'admin'},
+                {user: 'staf', pass: 'staf123', role: 'staff'}
+            ];
+            localStorage.setItem(DB_KEY, JSON.stringify(initialUsers));
+            return initialUsers;
+        }
+        return JSON.parse(data);
+    }
+
+    function toggleView(id) {
+        const x = document.getElementById(id);
+        x.type === "password" ? x.type = "text" : x.type = "password";
+    }
+
+    function showPage(id) {
+        document.getElementById('loginPage').classList.add('hidden');
+        document.getElementById('signupPage').classList.add('hidden');
+        document.getElementById(id).classList.remove('hidden');
+    }
+
+    function checkRole() {
+        const role = document.getElementById('s_role').value;
+        document.getElementById('pinArea').className = (role === 'admin' ? '' : 'hidden');
+    }
+
+    // --- MANAJEMEN USER (Fix image_0d4720.jpg) ---
+    function openManageUsers() {
+        const input = prompt("Masukkan PIN Admin:");
+        if (input === null) return;
+        if (input !== ADMIN_PIN) return alert("Akses Ditolak! PIN Salah.");
+
+        document.getElementById('manageModal').classList.remove('hidden');
+        renderUserList();
+    }
+
+    function closeManageUsers() {
+        document.getElementById('manageModal').classList.add('hidden');
+    }
+
+    function renderUserList() {
+        const users = initDB();
+        const container = document.getElementById('userList');
+        container.innerHTML = '';
+
+        users.forEach((u, index) => {
+            const item = document.createElement('div');
+            item.className = 'user-item';
+            item.innerHTML = `
+                <div class="user-info">
+                    <b>${u.user}</b>
+                    <i>Role: ${u.role}</i>
+                </div>
+                ${u.user !== 'admin' ? `<button class="btn-del" onclick="deleteUser(${index})">Hapus</button>` : '<small style="color:#cbd5e1">Sistem</small>'}
+            `;
+            container.appendChild(item);
+        });
+    }
+
+    function deleteUser(index) {
+        if (confirm("Hapus akun ini?")) {
+            let users = initDB();
+            users.splice(index, 1);
+            localStorage.setItem(DB_KEY, JSON.stringify(users));
+            renderUserList();
+        }
+    }
+
+    // --- HANDLER FORM ---
+    document.getElementById('signupForm').onsubmit = function(e) {
+        e.preventDefault();
+        const user = document.getElementById('s_user').value.trim();
+        const pass = document.getElementById('s_pass').value;
+        const role = document.getElementById('s_role').value;
+        const pin = document.getElementById('s_pin').value;
+
+        if (role === 'admin' && pin !== ADMIN_PIN) return alert("PIN Otorisasi Salah!");
+        
+        let users = initDB();
+        if (users.some(u => u.user.toLowerCase() === user.toLowerCase())) return alert("Username sudah terdaftar!");
+
+        users.push({user, pass, role});
+        localStorage.setItem(DB_KEY, JSON.stringify(users));
+        alert("Berhasil mendaftar!");
+        showPage('loginPage');
+        this.reset();
+    };
+
     document.getElementById('loginForm').onsubmit = function(e) {
         e.preventDefault();
-        const u = document.getElementById('username').value;
-        const p = document.getElementById('password').value;
+        const uIn = document.getElementById('l_user').value.trim();
+        const pIn = document.getElementById('l_pass').value;
+        
+        const users = initDB();
+        const found = users.find(u => u.user === uIn && u.pass === pIn);
 
-        // FITUR LOGIN ASLI (TIDAK BERUBAH)
-        if(u === 'admin' && p === 'wdntr12') {
-            sessionStorage.setItem('role', 'admin');
-            window.location.href = 'index.html';
-        } else if(u === 'staf' && p === 'staf123') {
-            sessionStorage.setItem('role', 'staff'); 
-            window.location.href = 'index.html';
+        if (found) {
+            sessionStorage.setItem('isLoggedIn', 'true');
+            sessionStorage.setItem('role', found.role);
+            alert("Berhasil Masuk!");
+            window.location.href = 'index.html'; 
         } else {
-            alert("Login Gagal! Periksa kembali username/password.");
+            alert("Username atau Password salah!");
         }
     };
-</script>
 
+    // Jalankan inisialisasi database saat pertama kali buka
+    initDB();
+</script>
 </body>
 </html>
