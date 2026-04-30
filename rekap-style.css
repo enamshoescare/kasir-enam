@@ -1,0 +1,321 @@
+:root {
+    --primary: #2563eb;
+    --secondary: #64748b;
+    --success: #166534;
+    --warning: #f59e0b;
+    --info: #64748b;
+    --danger: #ef4444;
+    --bg: #f1f5f9;
+    --card-bg: #ffffff;
+}
+
+body { 
+    font-family: 'Inter', -apple-system, sans-serif; 
+    background-color: var(--bg); 
+    padding: 0; 
+    margin: 0; 
+    color: #1e293b; 
+    -webkit-tap-highlight-color: transparent;
+}
+
+.nav-bar { 
+    background: white; 
+    padding: 5px; 
+    display: flex; 
+    justify-content: space-around; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+    position: sticky; 
+    top: 0; 
+    z-index: 100;
+}
+
+.nav-btn { 
+    padding: 12px 5px; 
+    border: none; 
+    background: transparent; 
+    font-weight: bold; 
+    color: var(--secondary); 
+    text-decoration: none; 
+    font-size: 13px; 
+    flex: 1; 
+    text-align: center;
+}
+
+.nav-btn.active { color: var(--primary); 
+    border-bottom: 
+    3px solid var(--primary); }
+
+.container { max-width: 900px; 
+    margin: 15px auto; 
+    padding: 0 12px; 
+    box-sizing: border-box; }
+
+.stats-grid { display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 12px; 
+    margin-bottom: 15px; }
+
+.stat-card { background: white; 
+    padding: 15px; 
+    border-radius: 15px; 
+    text-align: center; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+.stat-label { font-size: 11px; 
+    color: #475569; 
+    margin-bottom: 5px;
+     display: block; 
+     text-transform: uppercase; 
+     letter-spacing: 0.5px; }
+
+.stat-value { font-size: 16px; 
+    font-weight: 800; 
+    color: var(--primary); 
+    display: block; 
+    overflow: hidden; 
+    text-overflow: ellipsis; }
+
+.stat-cash { color: #16a34a; }
+.stat-transfer { color: #8b5cf6; }
+
+.filter-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.filter-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+@media (max-width: 400px) { .filter-row { grid-template-columns: 1fr; } }
+
+.input-group { display: flex; flex-direction: column; gap: 5px; }
+.input-group label { font-size: 11px; font-weight: bold; color: #64748b; }
+.input-group input, .input-group select { 
+    padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px; outline: none; 
+    font-size: 14px; background: #f8fafc; width: 100%; box-sizing: border-box;
+}
+
+.input-readonly { background: #e2e8f0 !important; color: #475569; font-weight: bold; }
+.reset-link { text-align: right; margin-top: 10px; display: block; font-size: 12px; color: var(--primary); text-decoration: none; cursor: pointer; font-weight: 600; }
+
+.table-card { background: white; padding: 10px; border-radius: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 900px; }
+th { text-align: left; padding: 12px 8px; border-bottom: 2px solid #f1f5f9; color: #64748b; font-weight: 700; }
+td { padding: 12px 8px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: middle; }
+.col-nama { font-weight: bold; color: #000; }
+
+.badge-status { border: none; padding: 5px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+.status-pending { background: #fef3c7; color: #92400e; }
+.status-done { background: #e0e7ff; color: #3730a3; }
+.pay-lunas { background: #dcfce7; color: #166534; }
+.pay-belum { background: #fee2e2; color: #991b1b; }
+
+.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
+.modal-content { background: white; padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+.modal-header { font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+.modal-footer { margin-top: 20px; display: flex; gap: 10px; }
+.btn-modal { flex: 1; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
+.btn-confirm { background: var(--primary); color: white; }
+.btn-cancel { background: #e2e8f0; color: hsl(215, 16%, 47%); }
+
+.btn-action-group { display: flex; gap: 4px; }
+.btn-kecil { padding: 6px 8px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; font-weight: bold; }
+.btn-print { background: #e0f2fe; color: #0369a1; }
+.btn-hapus-item { background: #fee2e2; color: #ef4444; }
+
+.footer-section { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; align-items: center; padding-bottom: 30px; }
+.btn-large-excel {
+    width: 100%;
+    /* Gradient hijau yang lebih modern dan segar */
+    background: linear-gradient(135deg, #166534 0%, #22c55e 100%);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    
+    /* Animasi transisi yang halus */
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
+    overflow: hidden;
+    
+    /* Shadow berlapis untuk efek kedalaman */
+    box-shadow: 0 4px 15px rgba(22, 101, 52, 0.2), 
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Efek Hover (Saat kursor di atas tombol) */
+.btn-large-excel:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(22, 101, 52, 0.3);
+    filter: brightness(1.1);
+}
+
+/* Efek Klik (Active) */
+.btn-large-excel:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(22, 101, 52, 0.2);
+}
+
+/* Efek Kilauan (Shimmer) */
+.btn-large-excel::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: 0.6s;
+}
+
+.btn-large-excel:hover::after {
+    left: 100%;
+}
+
+/* Container Backup - Dibuat lebih soft dan clean */
+.backup-container { 
+    width: 100%; 
+    border: 1.5px dashed #fcd34d; 
+    border-radius: 20px; 
+    padding: 20px; 
+    background-color: #fffdf5; 
+    box-sizing: border-box; 
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.backup-container:hover {
+    background-color: #fffbeb;
+    border-color: #fbbf24;
+}
+
+/* Grouping Tombol */
+.backup-buttons { 
+    display: flex; 
+    gap: 12px; 
+    margin-top: 5px;
+}
+
+/* Base Style Tombol Backup & Restore */
+.btn-backup-json, .btn-restore-json { 
+    flex: 1; 
+    color: white; 
+    border: none; 
+    padding: 12px 10px; 
+    border-radius: 12px; 
+    font-weight: 700; 
+    font-size: 12px; 
+    cursor: pointer; 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* Tombol Backup - Gradient Kuning Amber */
+.btn-backup-json { 
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);
+}
+
+/* Tombol Restore - Gradient Slate/Blue Grey */
+.btn-restore-json { 
+    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+    box-shadow: 0 4px 10px rgba(100, 116, 139, 0.2);
+}
+
+/* Efek Hover untuk Kedua Tombol */
+.btn-backup-json:hover, .btn-restore-json:hover { 
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Efek Klik */
+.btn-backup-json:active, .btn-restore-json:active { 
+    transform: translateY(0);
+    filter: brightness(0.9);
+}
+
+.btn-delete-all {
+    margin-top: 15px;
+    /* Gunakan warna merah yang lebih soft (Rose/Red 500-600) */
+    background: #fee2e2; 
+    color: #ef4444;
+    
+    /* Border halus agar terlihat profesional */
+    border: 1.5px solid #fecaca; 
+    padding: 12px 20px;
+    border-radius: 12px;
+    
+    /* Tipografi */
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    
+    /* Interaksi & Animasi */
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    
+    /* Shadow yang sangat halus */
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.05);
+}
+
+/* Efek saat kursor di atas tombol */
+.btn-delete-all:hover {
+    background: #ef4444;
+    color: #ffffff;
+    border-color: #ef4444;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.25);
+}
+
+/* Efek saat tombol ditekan */
+.btn-delete-all:active {
+    transform: translateY(0) scale(0.96);
+    box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.2);
+}
+
+
+/* PRINT STYLES */
+@media print 
+{
+    
+    @page { margin: 0; size: 58mm auto; display: block !important;
+    height: auto; /* Harus auto agar tidak memaksa kertas memanjang */
+    overflow: visible;page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    body * { visibility: hidden; }
+    #notaCetak, #notaCetak * { visibility: visible; }
+    #notaCetak { display: block !important; position: absolute; left: 0; top: 0; width: 50mm; padding: 4mm; border-radius: 15px; background: white; font-family: 'Courier New', monospace; font-size: 10px; line-height: 1.2; color: #000; }
+}
+
+#notaCetak { display: none; }
+.line { border-top: 1px dashed #000; margin: 5px 0; }
+.flex-between { display: flex; justify-content: space-between; }
+.text-bold { font-weight: bold; }
+.nota-logo {
+    width: 100px;
+    height: auto;
+    margin-bottom: 5px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
