@@ -55,19 +55,29 @@ function init() {
 function toggleBayarInput() {
     const status = document.getElementById('statusBayar').value;
     const inputBayar = document.getElementById('bayar');
-    const inputMetode = document.getElementById('metodeBayar'); // Pastikan ambil element ini
+    const inputMetode = document.getElementById('metodeBayar'); // Ambil element metode
     
     if (status === 'Belum Lunas') {
         inputBayar.value = 0;
         inputBayar.disabled = true;
-        inputMetode.parentElement.style.opacity = "0.5"; // Memberi efek visual non-aktif
+        
+        // Mengunci metode pembayaran
+        inputMetode.value = ""; // Reset pilihan
+        inputMetode.disabled = true; 
+        inputMetode.style.backgroundColor = "#e2e8f0"; // Beri warna abu-abu agar terlihat terkunci
+        
         document.getElementById('labelKembalian').innerText = "Kekurangan:";
     } else {
         inputBayar.disabled = false;
-        inputMetode.parentElement.style.opacity = "1";
+        
+        // Membuka kunci metode pembayaran
+        inputMetode.disabled = false;
+        inputMetode.style.backgroundColor = "#f8fafc"; // Warna normal
+        
         document.getElementById('labelKembalian').innerText = "Kembalian:";
     }
     hitungTotalOtomatis();
+
 }
 
 function tambahLayananBaru() {
@@ -120,17 +130,24 @@ function hitungTotalOtomatis() {
 function prosesTransaksi() {
     const nama = document.getElementById('nama').value;
     let inputWa = document.getElementById('whatsapp').value;
-    const metode = document.getElementById('metodeBayar').value;
     const sBayar = document.getElementById('statusBayar').value; 
     const calc = hitungTotalOtomatis();
 
+    // AMBIL NILAI METODE DENGAN LOGIKA FALLBACK
+    // Jika Belum Lunas, otomatis set menjadi "-" agar rapi di nota/DB
+    const metodeRaw = document.getElementById('metodeBayar').value;
+    const metode = (sBayar === 'Belum Lunas') ? "-" : metodeRaw;
+
+    // VALIDASI
     if(!nama || !inputWa || calc.sub === 0) return alert("Lengkapi data pelanggan dan layanan!");
     if(!sBayar) return alert("Silakan pilih Status Pembayaran!");
 
-    // PERBAIKAN: Validasi metode hanya jika statusnya "Lunas"
-    if(sBayar === 'Lunas' && !metode) {
+    // VALIDASI KHUSUS LUNAS
+    if(sBayar === 'Lunas' && !metodeRaw) {
         return alert("Silakan pilih Metode Pembayaran untuk pembayaran Lunas!");
     }
+
+    // ... sisa kode di bawahnya tetap sama ...
     
     let waSimpan = inputWa;
     if (waSimpan.startsWith('62')) {
