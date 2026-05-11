@@ -55,13 +55,16 @@ function init() {
 function toggleBayarInput() {
     const status = document.getElementById('statusBayar').value;
     const inputBayar = document.getElementById('bayar');
+    const inputMetode = document.getElementById('metodeBayar'); // Pastikan ambil element ini
     
     if (status === 'Belum Lunas') {
         inputBayar.value = 0;
         inputBayar.disabled = true;
+        inputMetode.parentElement.style.opacity = "0.5"; // Memberi efek visual non-aktif
         document.getElementById('labelKembalian').innerText = "Kekurangan:";
     } else {
         inputBayar.disabled = false;
+        inputMetode.parentElement.style.opacity = "1";
         document.getElementById('labelKembalian').innerText = "Kembalian:";
     }
     hitungTotalOtomatis();
@@ -123,8 +126,12 @@ function prosesTransaksi() {
 
     if(!nama || !inputWa || calc.sub === 0) return alert("Lengkapi data pelanggan dan layanan!");
     if(!sBayar) return alert("Silakan pilih Status Pembayaran!");
-    if(!metode) return alert("Silakan pilih Metode Pembayaran!");
 
+    // PERBAIKAN: Validasi metode hanya jika statusnya "Lunas"
+    if(sBayar === 'Lunas' && !metode) {
+        return alert("Silakan pilih Metode Pembayaran untuk pembayaran Lunas!");
+    }
+    
     let waSimpan = inputWa;
     if (waSimpan.startsWith('62')) {
         waSimpan = '0' + waSimpan.slice(2);
