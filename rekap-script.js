@@ -125,17 +125,24 @@ function prosesLunas() {
     const id = parseInt(document.getElementById('mId').value);
     let db = JSON.parse(localStorage.getItem('cuciSepatuDB')) || [];
     const index = db.findIndex(x => x.id === id);
+    
     if (index !== -1) {
-        db[index].metode = document.getElementById('mMetode').value;
+        // Mengambil nilai metode pembayaran dari select di dalam modal
+        const metodeBaru = document.getElementById('mMetode').value; 
+        
+        db[index].metode = metodeBaru; // Update metode pembayaran
         db[index].diskon = Number(document.getElementById('mDiskon').value);
         db[index].total = Number(document.getElementById('mTotal').value);
         db[index].bayar = Number(document.getElementById('mUangBayar').value);
         db[index].kembali = Number(document.getElementById('mKembali').value);
         db[index].statusBayar = 'Lunas';
+        
         localStorage.setItem('cuciSepatuDB', JSON.stringify(db));
-        tutupModal(); muatData();
+        tutupModal(); 
+        muatData();
     }
 }
+
 
 function tutupModal() { 
     document.getElementById('modalBayar').style.display = 'none'; 
