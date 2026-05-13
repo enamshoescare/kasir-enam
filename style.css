@@ -68,11 +68,32 @@ input:disabled { background: #f1f5f9; cursor: not-allowed; }
 }
 
 .btn-del { 
-    background: #fee2e2; color: var(--danger); border: none; 
-    border-radius: 8px; min-width: 35px; height: 35px; 
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    background: #fee2e2; 
+    color: #ef4444; 
+    border: 1px solid #fecaca; 
+    border-radius: 8px; 
+    min-width: 35px; 
+    height: 35px; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    transition: all 0.2s ease;
 }
 
+.btn-del:hover {
+    background: #ef4444;
+    color: white;
+    transform: scale(1.05);
+}
+
+.btn-del .material-symbols-outlined {
+    line-height: 1;
+    display: block;
+}
+#nama {
+    text-transform: capitalize;
+}
 /* CSS Panel Admin */
 .admin-panel { margin-top: 12px; padding: 12px; border: 1.5px dashed #cbd5e1; border-radius: 12px; background: #fdfdfd; }
 .admin-panel label { font-size: 11px; color: #94a3b8; }
