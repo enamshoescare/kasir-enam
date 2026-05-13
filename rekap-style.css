@@ -103,6 +103,14 @@ td { padding: 12px 8px; border-bottom: 1px solid #f1f5f9; color: #334155; vertic
 .badge-status { border: none; padding: 5px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
 .status-pending { background: #fef3c7; color: #92400e; }
 .status-done { background: #e0e7ff; color: #3730a3; }
+
+/* Status baru untuk Sepatu Siap Diambil */
+.status-siap { 
+    background: #dcfce7; 
+    color: #166534; 
+    border: 1.5px solid #166534;
+}
+
 .pay-lunas { background: #dcfce7; color: #166534; }
 .pay-belum { background: #fee2e2; color: #991b1b; }
 
@@ -116,8 +124,46 @@ td { padding: 12px 8px; border-bottom: 1px solid #f1f5f9; color: #334155; vertic
 
 .btn-action-group { display: flex; gap: 4px; }
 .btn-kecil { padding: 6px 8px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; font-weight: bold; }
-.btn-print { background: #e0f2fe; color: #0369a1; }
-.btn-hapus-item { background: #fee2e2; color: #ef4444; }
+.btn-print {
+    background: #f0f9ff; /* Biru sangat muda */
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+    font-size: 18px; /* Ukuran icon sedikit diperbesar */
+    padding: 4px 10px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-print:hover {
+    background: #0099ff;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.btn-hapus-item {
+    background: #fee2e2; 
+    color: #ef4444;
+    border: 1.5px solid #fecaca; 
+    padding: 5px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-hapus-item:hover {
+    background: #ef4444;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* Pastikan ukuran icon pas */
+.btn-hapus-item .material-symbols-outlined {
+    font-size: 18px;
+}
 
 .footer-section { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; align-items: center; padding-bottom: 30px; }
 .btn-large-excel {
@@ -291,7 +337,20 @@ td { padding: 12px 8px; border-bottom: 1px solid #f1f5f9; color: #334155; vertic
     transform: translateY(0) scale(0.96);
     box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.2);
 }
+/* Style untuk nama yang bisa diklik */
+.nama-klik {
+    color: var(--primary);
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
 
+/* Efek saat kursor mendekat (Hover) */
+.nama-klik:hover {
+    filter: brightness(1.2); /* Warna jadi sedikit lebih terang */
+    transform: scale(1.02);   /* Sedikit membesar agar terasa interaktif */
+}
 
 /* PRINT STYLES */
 @media print 
