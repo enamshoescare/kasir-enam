@@ -20,6 +20,23 @@ function logout() {
 
 function init() {
     checkAuth();
+    
+    // --- FITUR BARU: KAPITALISASI OTOMATIS ---
+    const inputNama = document.getElementById('nama');
+    if (inputNama) {
+        inputNama.addEventListener('input', function(e) {
+            let posisiKursor = e.target.selectionStart;
+            let kata = e.target.value.split(' ');
+            for (let i = 0; i < kata.length; i++) {
+                if (kata[i].length > 0) {
+                    kata[i] = kata[i].charAt(0).toUpperCase() + kata[i].slice(1);
+                }
+            }
+            e.target.value = kata.join(' ');
+            e.target.setSelectionRange(posisiKursor, posisiKursor);
+        });
+    }
+
     if (USER_ROLE === 'staff') {
         const adminArea = document.getElementById('adminArea');
         if(adminArea) adminArea.style.display = 'none';
@@ -33,8 +50,10 @@ function init() {
 
     document.getElementById('serviceList').innerHTML = stored.map((s, index) => {
         const btnHapus = USER_ROLE === 'admin' 
-            ? `<button class="btn-del" onclick="hapusLayanan(${index})">🗑️</button>` 
-            : '';
+    ? `<button class="btn-del" onclick="hapusLayanan(${index})" title="Hapus Layanan">
+        <span class="material-symbols-outlined" style="font-size: 20px;">delete</span>
+       </button>` 
+    : '';s
 
         return `
             <div class="service-item">
@@ -55,29 +74,22 @@ function init() {
 function toggleBayarInput() {
     const status = document.getElementById('statusBayar').value;
     const inputBayar = document.getElementById('bayar');
-    const inputMetode = document.getElementById('metodeBayar'); // Ambil element metode
+    const inputMetode = document.getElementById('metodeBayar'); 
     
     if (status === 'Belum Lunas') {
         inputBayar.value = 0;
         inputBayar.disabled = true;
-        
-        // Mengunci metode pembayaran
-        inputMetode.value = ""; // Reset pilihan
+        inputMetode.value = ""; 
         inputMetode.disabled = true; 
-        inputMetode.style.backgroundColor = "#e2e8f0"; // Beri warna abu-abu agar terlihat terkunci
-        
+        inputMetode.style.backgroundColor = "#e2e8f0"; 
         document.getElementById('labelKembalian').innerText = "Kekurangan:";
     } else {
         inputBayar.disabled = false;
-        
-        // Membuka kunci metode pembayaran
         inputMetode.disabled = false;
-        inputMetode.style.backgroundColor = "#f8fafc"; // Warna normal
-        
+        inputMetode.style.backgroundColor = "#f8fafc"; 
         document.getElementById('labelKembalian').innerText = "Kembalian:";
     }
     hitungTotalOtomatis();
-
 }
 
 function tambahLayananBaru() {
@@ -133,21 +145,15 @@ function prosesTransaksi() {
     const sBayar = document.getElementById('statusBayar').value; 
     const calc = hitungTotalOtomatis();
 
-    // AMBIL NILAI METODE DENGAN LOGIKA FALLBACK
-    // Jika Belum Lunas, otomatis set menjadi "-" agar rapi di nota/DB
     const metodeRaw = document.getElementById('metodeBayar').value;
     const metode = (sBayar === 'Belum Lunas') ? "-" : metodeRaw;
 
-    // VALIDASI
     if(!nama || !inputWa || calc.sub === 0) return alert("Lengkapi data pelanggan dan layanan!");
     if(!sBayar) return alert("Silakan pilih Status Pembayaran!");
 
-    // VALIDASI KHUSUS LUNAS
     if(sBayar === 'Lunas' && !metodeRaw) {
         return alert("Silakan pilih Metode Pembayaran untuk pembayaran Lunas!");
     }
-
-    // ... sisa kode di bawahnya tetap sama ...
     
     let waSimpan = inputWa;
     if (waSimpan.startsWith('62')) {
@@ -230,5 +236,4 @@ function cetakNotaFisik() {
     window.print();
 }
 
-// Jalankan init saat halaman selesai dimuat
 window.onload = init;
