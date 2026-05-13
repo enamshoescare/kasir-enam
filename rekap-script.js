@@ -62,13 +62,21 @@ function muatData() {
         sepatuTotal += (Number(t.sepatu) || 0);
 
         let detailTampil = (t.layanan || "").replace(/, $/, "").trim();
-        const statusClass = status === 'Sudah Diambil' ? 'status-done' : 'status-pending';
+        
+        // --- LOGIKA WARNA STATUS BARU ---
+        const statusClass = status === 'Sudah Diambil' ? 'status-done' : 
+                            (status === 'Siap Diambil' ? 'status-siap' : 'status-pending');
+        
         const payClass = statusBayar === 'Lunas' ? 'pay-lunas' : 'pay-belum';
 
         tbody.innerHTML += `
             <tr>
                 <td>${t.tgl.split(',')[0]}</td>
-                <td class="col-nama">${t.nama}</td>
+                    <td class="col-nama">
+                     <span class="nama-klik" onclick="tampilkanDetailPelanggan(${t.id})">
+                      ${t.nama}
+             </span>
+            </td>   
                 <td><div style="max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${detailTampil || '-'}</div></td>
                 <td><span style="font-size: 10px; background: #fff; border: 1px solid #ddd; padding: 3px 6px; border-radius: 4px;">${metode}</span></td>
                 <td><button class="badge-status ${payClass}" onclick="toggleBayar(${t.id})">${statusBayar}</button></td>
@@ -76,8 +84,14 @@ function muatData() {
                 <td>${total.toLocaleString('id-ID')}</td>
                 <td>
                     <div class="btn-action-group">
-                        <button class="btn-kecil btn-print" onclick="cetakNota(${t.id})">Nota</button>
-                        ${ROLE === 'admin' ? `<button class="btn-kecil btn-hapus-item" onclick="hapusData(${t.id})">✕</button>` : ''}
+                      <button class="btn-kecil btn-print" onclick="cetakNota(${t.id})" title="Cetak Nota">
+    <span class="material-symbols-outlined" style="font-size: 18px;">print</span>
+</button>
+                       ${ROLE === 'admin' ? `
+    <button class="btn-kecil btn-hapus-item" onclick="hapusData(${t.id})" title="Hapus Data">
+        <span class="material-symbols-outlined">delete</span>
+    </button>` 
+: ''}
                     </div>
                 </td>
             </tr>
@@ -86,6 +100,81 @@ function muatData() {
     updateStatsDisplay(sepatuTotal, omzetTotal, cashTotal, transferTotal);
 }
 
+// --- FITUR: DETAIL PELANGGAN (MODAL) ---
+function tampilkanDetailPelanggan(id) {
+    const db = JSON.parse(localStorage.getItem('cuciSepatuDB')) || [];
+    const data = db.find(x => x.id === id);
+    
+    if (data) {
+        // Mengisi data ke modal detail (Pastikan elemen ID ini ada di rekapan.html)
+        const detNama = document.getElementById('detNama');
+        const detWA = document.getElementById('detWA');
+        const detInv = document.getElementById('detInv');
+        const detLayanan = document.getElementById('detLayanan');
+
+        if(detNama) detNama.innerText = data.nama;
+        if(detWA) detWA.innerText = data.wa || '-';
+        if(detInv) detInv.innerText = data.inv || "INV-" + data.id;
+        if(detLayanan) detLayanan.innerText = data.layanan;
+        
+        const modal = document.getElementById('modalDetail');
+        if(modal) modal.style.display = 'flex';
+    }
+}
+
+function tutupModalDetail() {
+    const modal = document.getElementById('modalDetail');
+    if(modal) modal.style.display = 'none';
+}
+
+// --- FITUR BARU: TOGGLE STATUS 3 TAHAP & WA ---
+function toggleStatus(id) {
+    let db = JSON.parse(localStorage.getItem('cuciSepatuDB')) || [];
+    const index = db.findIndex(x => x.id === id);
+    
+    if (index !== -1) {
+        const currentStatus = db[index].status || 'Belum Diambil';
+        let nextStatus;
+
+        if (currentStatus === 'Belum Diambil') {
+            nextStatus = 'Siap Diambil';
+            kirimWA_Siap(db[index]); // Panggil Notifikasi WA
+        } else if (currentStatus === 'Siap Diambil') {
+            nextStatus = 'Sudah Diambil';
+        } else {
+            nextStatus = 'Belum Diambil';
+        }
+
+        db[index].status = nextStatus;
+        localStorage.setItem('cuciSepatuDB', JSON.stringify(db));
+        muatData();
+    }
+}
+
+function kirimWA_Siap(data) {
+    const konfirmasi = confirm(`Kirim notifikasi WA ke ${data.nama} bahwa sepatu siap diambil?`);
+    
+    if (konfirmasi) {
+        let waAPI = data.wa;
+        if (waAPI.startsWith('0')) {
+            waAPI = '62' + waAPI.slice(1);
+        } else if (!waAPI.startsWith('62')) {
+            waAPI = '62' + waAPI;
+        }
+
+        const pesan = `*ENAM SHOES CARE*\n` +
+                      `--------------------------------\n` +
+                      `Halo Kak *${data.nama}*,\n\n` +
+                      `Sepatu Kakak dengan nomor nota *${data.inv}* telah selesai kami kerjakan dan *SIAP DIAMBIL*. 👟✨\n\n` +
+                      `Layanan: ${data.layanan}\n` +
+                      `--------------------------------\n` +
+                      `Terima kasih, sampai jumpa di toko!`;
+
+        window.open(`https://api.whatsapp.com/send?phone=${waAPI}&text=${encodeURIComponent(pesan)}`, '_blank');
+    }
+}
+
+// --- FITUR PEMBAYARAN TETAP ADA ---
 function toggleBayar(id) {
     let db = JSON.parse(localStorage.getItem('cuciSepatuDB')) || [];
     const index = db.findIndex(x => x.id === id);
@@ -127,10 +216,8 @@ function prosesLunas() {
     const index = db.findIndex(x => x.id === id);
     
     if (index !== -1) {
-        // Mengambil nilai metode pembayaran dari select di dalam modal
         const metodeBaru = document.getElementById('mMetode').value; 
-        
-        db[index].metode = metodeBaru; // Update metode pembayaran
+        db[index].metode = metodeBaru;
         db[index].diskon = Number(document.getElementById('mDiskon').value);
         db[index].total = Number(document.getElementById('mTotal').value);
         db[index].bayar = Number(document.getElementById('mUangBayar').value);
@@ -143,19 +230,8 @@ function prosesLunas() {
     }
 }
 
-
 function tutupModal() { 
     document.getElementById('modalBayar').style.display = 'none'; 
-}
-
-function toggleStatus(id) {
-    let db = JSON.parse(localStorage.getItem('cuciSepatuDB')) || [];
-    const index = db.findIndex(x => x.id === id);
-    if (index !== -1) {
-        db[index].status = db[index].status === 'Sudah Diambil' ? 'Belum Diambil' : 'Sudah Diambil';
-        localStorage.setItem('cuciSepatuDB', JSON.stringify(db));
-        muatData();
-    }
 }
 
 function cetakNota(id) {
@@ -170,14 +246,9 @@ function cetakNota(id) {
     document.getElementById('notaMetode').innerText = "Metode: " + (t.metode || 'Tunai');
     
     const areaStatus = document.getElementById('notaStatus');
-    if (t.statusBayar === 'Lunas') {
-        areaStatus.innerHTML = `<div class="line"></div><div class="text-bold" style="text-align:center">*** LUNAS ***</div><div class="line"></div>`;
-    } else {
-        areaStatus.innerHTML = `<div class="line"></div><div class="text-bold" style="text-align:center">*** BELUM LUNAS ***</div><div class="line"></div>`;
-    }
+    areaStatus.innerHTML = `<div class="line"></div><div class="text-bold">STATUS: ${t.statusBayar.toUpperCase()} </div><div class="line"></div>`;
     
     document.getElementById('notaDetail').innerHTML = t.detailHtml || '-';
-
     const sub = Number(t.sub) || Number(t.total);
     const disk = Number(t.diskon) || 0;
     const tot = Number(t.total) || 0;
@@ -193,12 +264,10 @@ function cetakNota(id) {
 
     if (t.statusBayar === 'Lunas') {
         labelKembali.innerText = "KEMBALI:";
-        const kembalian = bay - tot;
-        fieldKembali.innerText = "Rp " + (kembalian > 0 ? kembalian : 0).toLocaleString('id-ID');
+        fieldKembali.innerText = "Rp " + Math.max(0, bay - tot).toLocaleString('id-ID');
     } else {
         labelKembali.innerText = "SISA TAGIHAN:";
-        const sisa = tot - bay;
-        fieldKembali.innerText = "Rp " + (sisa > 0 ? sisa : 0).toLocaleString('id-ID');
+        fieldKembali.innerText = "Rp " + Math.max(0, tot - bay).toLocaleString('id-ID');
     }
 
     setTimeout(() => { window.print(); }, 300);
@@ -219,47 +288,58 @@ function resetFilter() {
 
 function downloadExcel() {
     const db = JSON.parse(localStorage.getItem('cuciSepatuDB')) || [];
-    if (db.length === 0) return alert("Data kosong!");
+    if (db.length === 0) return alert("Tidak ada data untuk didownload");
 
-    let totalCash = 0, totalTransfer = 0, totalSepatu = 0;
+    let totalCash = 0;
+    let totalTransfer = 0;
+    let totalSepatu = 0;
 
-    const rows = db.map((t, index) => {
+    // 1. Susun Data Transaksi Utama
+    const rows = db.map(t => {
         const total = Number(t.total) || 0;
-        const sepatu = Number(t.sepatu) || 0;
+        const sepatu = Number(t.sepatu) || 1;
         const metode = t.metode || '-';
-        const lunas = t.statusBayar === 'Lunas';
+        const isLunas = t.statusBayar === 'Lunas';
 
-        if (lunas) {
-            if (metode === 'Tunai') totalCash += total;
+        // Hitung akumulasi hanya untuk yang Lunas
+        if (isLunas) {
+            if (metode === 'Tunai' || metode === 'Cash') totalCash += total;
             if (metode === 'Transfer') totalTransfer += total;
         }
         totalSepatu += sepatu;
 
         return {
-            "No": index + 1,
             "Tanggal": t.tgl,
-            "Invoice": t.inv || `INV-${t.id}`,
             "Nama Pelanggan": t.nama,
-            "WhatsApp": t.wa || "-",
-            "Layanan": (t.layanan || "").replace(/, $/, ""),
+            "Layanan": t.layanan,
             "Metode": metode,
-            "Status Bayar": t.statusBayar || "Belum Lunas",
+            "Status": t.statusBayar,
             "Jumlah Sepatu": sepatu,
+            "Subtotal": t.sub,
+            "Diskon": t.diskon,
             "Total Bayar": total
         };
     });
 
-    rows.push({}, {});
+    // 2. Tambahkan Baris Kosong Sebagai Pemisah
+    rows.push({}); 
+    rows.push({}); 
+
+    // 3. Tambahkan Bagian Ringkasan Pendapatan
     rows.push({ "Layanan": "RINGKASAN PENDAPATAN (LUNAS)" });
     rows.push({ "Layanan": "Total Cash", "Total Bayar": totalCash });
     rows.push({ "Layanan": "Total Transfer", "Total Bayar": totalTransfer });
     rows.push({ "Layanan": "Total Sepatu", "Total Bayar": totalSepatu });
     rows.push({ "Layanan": "TOTAL KESELURUHAN", "Total Bayar": totalCash + totalTransfer });
 
+    // 4. Proses Pembuatan File
     const worksheet = XLSX.utils.json_to_sheet(rows);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap");
-    XLSX.writeFile(workbook, `Rekap_Enam_Shoes_Care.xlsx`);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Rekapan Enam Shoes");
+
+    // 5. Download File dengan Nama yang Rapi
+    const tglFile = new Date().toLocaleDateString('id-ID').replace(/\//g, '-');
+    XLSX.writeFile(workbook, `Rekap_Enam_${tglFile}.xlsx`);
 }
 
 function hapusData(id) {
@@ -306,5 +386,4 @@ function prosesImport(event) {
     reader.readAsText(file);
 }
 
-// Jalankan fungsi saat halaman dimuat
 window.onload = muatData;
